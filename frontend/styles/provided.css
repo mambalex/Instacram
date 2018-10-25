@@ -102,7 +102,7 @@ footer {
 
 /* Add your styles here */
 
-.id{
+.id, .current_user{
     display: none;
 }
 
@@ -237,7 +237,13 @@ footer {
 }
 
 .content{
-        margin: 17px 20px 20px 20px;
+        margin: 17px 20px 10px 20px;
+}
+
+.comment-list{
+    margin: 0 20px 10px 20px;
+    /*height: 60px;*/
+    overflow: hidden;
 }
 
 /*.heart, .comment{*/
@@ -271,14 +277,31 @@ footer {
     color: #262626;
 }
 
-.caption {
+.caption, .comment-item {
     font-size: 20px;
 }
 
-.caption span{
+.comment-item{
+    color: #262626;
+    height: 20px;
+}
+
+.view-more{
+    margin: 0 0 20px 20px;
+    height: 20px;
+    color: #777;
+    font-size: 18px !important;
+    font-weight: 400!important;
+    cursor: pointer;
+}
+
+.caption span, .comment-item span{
     font-weight: 450;
     margin-right: 20px;
 }
+
+
+
 
 .comment-input{
     width: 90% !important;

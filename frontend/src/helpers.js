@@ -1,4 +1,6 @@
 /* returns an empty array of size max */
+import USER from './user.js';
+
 export const range = (max) => Array(max).fill(null);
 
 /* returns a randomInteger */
@@ -84,6 +86,33 @@ export function checkStore(key) {
 
 }
 
+function sort_unique(arr) {
+    return arr.sort().reverse().filter(function(el,i,a) {
+        return (i==a.indexOf(el));
+    });
+}
+
+function sortPosts(posts) {
+    var time = [];
+    var dic = {};
+    var newPosts = [];
+    posts.forEach(function (post) {
+        time.push(post['meta']['published']);
+        if(!dic[post['meta']['published']]){
+            dic[post['meta']['published']] = [post];
+        }else{
+            dic[post['meta']['published']].push(post);
+        }
+    })
+    time = sort_unique(time);
+    time.forEach(function (t) {
+        dic[t].forEach(function (p) {
+            newPosts.push(p)
+        })
+    })
+    return newPosts;
+}
+
 function timeConverter(t) {
     var a = new Date(t * 1000);
     var today = new Date();
@@ -94,9 +123,22 @@ function timeConverter(t) {
     var date = a.getDate();
     var hour = a.getHours();
     var min = a.getMinutes();
-    if (a.setHours(0,0,0,0) == today.setHours(0,0,0,0))
-        return 'today, ' + hour + ':' + min;
-    else if (a.setHours(0,0,0,0) == yesterday.setHours(0,0,0,0))
+    if(min<10){
+        min = `0${min}`
+    }
+    var now = new Date();
+    var nowHour = now.getHours();
+    var nowMin = now.getMinutes();
+    if (a.setHours(0,0,0,0) == today.setHours(0,0,0,0)) {
+        var hourGap = nowHour - hour;
+        var minGap = nowMin - min;
+        if (minGap > 60) {
+            return `${hourGap} hours ago`
+        } else {
+            if(minGap==1){return '1 minute ago'}else{return `${minGap} minutes ago`}
+        }
+        // return 'today, ' + hour + ':' + min;
+    }else if (a.setHours(0,0,0,0) == yesterday.setHours(0,0,0,0))
         return 'yesterday, ' + hour + ':' + min;
     else if (year == today.getFullYear())
         return date + ' ' + month + ', ' + hour + ':' + min;
@@ -104,17 +146,48 @@ function timeConverter(t) {
         return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
 }
 
+
+
 export function displayPosts(posts) {
     console.log(posts);
-    posts['posts'].forEach(function (post) {
+    posts = sortPosts(posts)
+    const container = document.querySelector('#large-feed');
+    // remove all children
+    while (container.firstChild) {
+         container.removeChild(container.firstChild);
+    }
+    posts.forEach(function (post) {
         const id = post['id'];
         const author = post['meta']['author'];
+        const comments  = post['comments'];
         const description = post['meta']['description_text'];
-        const likes = post['meta']['likes'].length;
+        var likes = post['meta']['likes'].length;
         const path = post['src'];
         const timeStamp = post['meta']['published'];
         const time = timeConverter(timeStamp);
-        const container = document.querySelector('#large-feed');
+        if(likes != 0){
+            likes = post['meta']['likes'][0];
+        }
+        var commentsDiv = '';
+        if(comments.length > 2){
+            commentsDiv  += `<div class='comment-list' style='height:60px'>`
+            comments.forEach(function (cmt) {
+             commentsDiv  += `
+                    <p class="comment-item">
+                        <span>${cmt['author']}</span> ${cmt['comment']}
+                    </p>`
+             })
+            commentsDiv  += `</div><div class='view-more'>View all ${comments.length} comments</div>`
+        }else {
+            commentsDiv  += `<div class='comment-list'>`;
+            comments.forEach(function (cmt) {
+             commentsDiv  += `
+                    <p class="comment-item">
+                        <span>${cmt['author']}</span> ${cmt['comment']}
+                    </p>`
+             })
+            commentsDiv  += '</div>'
+        }
         container.innerHTML += `
             <section class="post">
                 <div class="id">${id}</div>
@@ -130,6 +203,7 @@ export function displayPosts(posts) {
                     <p class="caption">
                         <span>${author}</span>${description}️</p>
                 </div>
+                ${commentsDiv}
                 <div class="input-group mb-3 comment-input" style="display: none">
                       <div class="input-group-prepend">
                         <span class="input-group-text" ></span>
@@ -142,4 +216,25 @@ export function displayPosts(posts) {
             </section>
         `
     })
+}
+
+export function getPosts(username, p, n) {
+            const user  = new USER(username);
+          //get user info
+            var selfPosts;
+            var userInfo = user.getUserInfo();
+                userInfo
+                    .then(rsp => {
+                        console.log(rsp);
+                        selfPosts = rsp['posts'];
+                        document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
+                        document.querySelector('.welcome-user').style.display = 'block';
+                        // var selfFeeds = user.getSelfFeed(selfPosts);
+                        var otherFeedPromise = user.getFollowFeed(p,n);
+                        otherFeedPromise
+                            .then(rsp => {
+                                var otherPosts = rsp['posts'];
+                                user.getSelfFeed(selfPosts, otherPosts)
+                            });
+                    })
 }

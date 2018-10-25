@@ -1,40 +1,10 @@
 import API from './api.js';
+import {displayPosts} from './helpers.js';
 // import {createElement} from './helpers.js';
 
 const api  = new API();
 
-// function getBase64(event) {
-//     const [ file ] = event.target.files;
-//
-//     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
-//     const valid = validFileTypes.find(type => type === file.type);
-//
-//     // bad data, let's walk away
-//     if (!valid)
-//         return false;
-//
-//     // if we get here we have a valid image
-//     const reader = new FileReader();
-//
-//     reader.onload = (e) => {
-//         // do something with the data result
-//         const dataURL = e.target.result;
-//         return dataURL;
-//     };
-// }
 
-
-// function getBase64(file) {
-//    var reader = new FileReader();
-//    reader.readAsDataURL(file);
-//    reader.onload = function () {
-//      console.log(reader.result);
-//      return reader.result;
-//    };
-//    reader.onerror = function (error) {
-//      console.log('Error: ', error);
-//    };
-// }
 
 export default class USER {
 
@@ -64,32 +34,43 @@ export default class USER {
         userInfo = api.makeAPIRequest(url,options);
         return userInfo;
     }
-
     /**
-     * @returns follow
+     * @returns user info
      */
-    follow(userToFollow) {
+    getSelfFeed(posts, otherPosts) {
+        var array=[];
         var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
-        var url = `/user/follow?username=${userToFollow}`;
         var options = {
-            method: 'PUT',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             }
         }
-        var rsp = api.makeAPIRequest(url, options);
-        rsp
-            .then(rsp => {
-                    if (rsp['message'] == 'success') {
-                        alert('Congrats! Successfully followed!')
-                    }
-                }
-            )
+        var i = 0;
+        function loadNext(posts) {
+            if(i< posts.length){
+                var url = `/post/?id=${posts[i]}`;
+                var feeds = api.makeAPIRequest(url,options);
+                    feeds
+                        .then(post => {
+                            array.push(post);
+                            i++;
+                            loadNext(posts);
+                        })
+
+            }
+            if(i == posts.length){
+                var totalPosts = array.concat(otherPosts);
+                displayPosts(totalPosts)
+            }
+        }
+
+        loadNext(posts)
     }
 
     /**
-     * @returns feed
+     * @returns get feeds from following users
      */
      getFollowFeed(p, n) {
             let token = JSON.parse(localStorage.getItem(`${this.username}Token`));
@@ -99,7 +80,8 @@ export default class USER {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Token ${token}`
+                    'Authorization': `Token ${token}`,
+                    'async': 'false'
                 }
             }
             var feeds = api.makeAPIRequest(url,options);
@@ -109,6 +91,7 @@ export default class USER {
      * @returns upload photo
      */
      upload() {
+            var user = this.username;
             let token = JSON.parse(localStorage.getItem(`${this.username}Token`));
             var descr = document.querySelector('.description').value;
             var file = document.querySelector('#inputFile').files[0];
@@ -135,6 +118,39 @@ export default class USER {
                         console.log(rsp)
                         if(rsp['post_id']){
                             alert('Successfully loaded');
+                            document.querySelector('.upload-files').style.display = 'none';
+                            var container = document.querySelector('#large-feed');
+                            var newPost = document.createElement('section');
+                            newPost.classList.add('post');
+                            newPost.innerHTML +=  `
+                <div class="id">${rsp['post_id']}</div>
+                <h2 class="post-title">${user}</h2>
+                <img src="data:image/png;base64,${base64}"  class="post-image">
+                <div class="content">
+                    <div class="icon">
+                        <i class="far fa-heart fa-lg heart"></i>
+                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
+                        <i class="far fa-comment fa-lg comment"></i>
+                    </div>
+                    <p class="likes">0 likes</p>
+                    <p class="caption">
+                        <span>${user}</span>${descr}️</p>
+                </div>
+                <div class="comment-list" ></div>
+                <div class="input-group mb-3 comment-input" style="display: none">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" ></span>
+                      </div>
+                      <input type="text" class="form-control add-comment"
+                             placeholder="Add a comment..."
+                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
+                <div class="time">now</div>
+        `
+
+
+                            container.insertBefore(newPost, container.firstChild);
+
                         }else{
                             alert(rsp['message'])
                         }
@@ -143,12 +159,108 @@ export default class USER {
                         }
                     )
                };
-
-
-
      }
-
-
+      /**
+     * @returns follow
+     */
+    follow(userToFollow) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/user/follow?username=${userToFollow}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    if (rsp['message'] == 'success') {
+                        alert('Congrats! Successfully followed!')
+                    }
+                }
+            )
+    }
+    /**
+     * @ like
+     */
+    like(postId) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/like?id=${postId}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    console.log(rsp)
+                    if (rsp['message'] == 'success') {
+                        // var url = `/post/?id=${postId}`;
+                        // var options = {
+                        //             method: 'GET',
+                        //             headers: {
+                        //                 'Content-Type': 'application/json',
+                        //                 'Authorization': `Token ${token}`
+                        //             }
+                        // }
+                        // var feed = api.makeAPIRequest(url,options);
+                        // feed
+                        //     .then(rsp => console.log(rsp))
+                    }
+                }
+            )
+    }
+    /**
+     * @ unlike
+     */
+    unlike(postId) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/unlike?id=${postId}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    console.log(rsp)
+                    if (rsp['message'] == 'success') {
+                    }
+                }
+            )
+    }
+    /**
+     * @ comment
+     */
+    comment(postId,author,time,comment) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/comment?id=${postId}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({'author':author,'published':time, 'comment':comment})
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    console.log(rsp)
+                    // if (rsp['message'] == 'success'){
+                    //
+                    // }
+                }
+            )
+    }
 
 }
 

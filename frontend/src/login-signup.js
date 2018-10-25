@@ -1,3 +1,5 @@
+import USER from './user.js';
+
 //dropdown
 document.querySelector('.user').addEventListener('click', function(e) {
     e.preventDefault();
@@ -91,8 +93,15 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
    event.preventDefault();
   if (event.target.classList.contains('heart')) {
       event.target.style.display = 'none';
+      var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+      var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
+      likes = parseInt(likes)+1;
       var solid = event.target.parentNode.childNodes[3];
       solid.style.display = 'inline-block';
+      var username = document.querySelector('.welcome-user').textContent.slice(15);
+      var user = new USER(username)
+      user.like(id);
+      event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
   }
 })
 
@@ -102,8 +111,15 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
    event.preventDefault();
   if (event.target.classList.contains('heart-solid')) {
       event.target.style.display = 'none';
+      var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+      var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
+      likes = parseInt(likes)-1;
       var heart = event.target.parentNode.childNodes[1];
       heart.style.display = 'inline-block';
+      var username = document.querySelector('.welcome-user').textContent.slice(15);
+      var user = new USER(username)
+      user.unlike(id);
+      event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
   }
 })
 
@@ -112,9 +128,8 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
 document.querySelector('#large-feed').addEventListener('click', function (event) {
     event.preventDefault();
     if (event.target.classList.contains('comment')) {
-      var commentIcon = event.target.parentNode.childNodes[5];
-      console.log(commentIcon);
-      var input = commentIcon.parentNode.parentNode.parentNode.childNodes[9];
+     var commentIcon  =   event.target.parentNode.childNodes[5];
+     var input = commentIcon.parentNode.parentNode.parentNode.querySelector('.comment-input');
         if(input.style.display == 'table'){
             input.style.display = 'none';
             input.childNodes[2].value = '';
@@ -124,20 +139,63 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
     }
 })
 
-
-
-//click comment icon
-document.querySelector('.comment').addEventListener('click', function (e) {
-    e.preventDefault();
-    var input = this.parentNode.parentNode.parentNode.childNodes[4];
-    if(input.style.display == 'table'){
-        input.style.display = 'none';
-        input.childNodes[2].value = '';
-        // document.querySelector('.add-comment').value = '';
-    }else{
-         input.style.display = 'table';
+//click view more
+document.querySelector('#large-feed').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('view-more')) {
+        var viewMore = event.target;
+        var commentList = event.target.parentNode.querySelector('.comment-list');
+        if(viewMore.textContent != 'Collapse'){
+            viewMore.textContent = 'Collapse';
+            commentList.style.height = 'auto';
+        }else{
+            commentList.style.height = '60px';
+            viewMore.textContent = `View all ${commentList.childElementCount} comments`;
+        }
     }
 })
+
+function insertAfter(newNode, referenceNode) {
+    referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
+
+//submit comment
+document.querySelector('#large-feed').addEventListener('keypress', function (event) {
+    if(event.which == 13){
+        event.preventDefault();
+        var parentPost = event.target.parentNode.parentNode;
+        var comment = event.target.value;
+        if(!comment){alert('Please enter comment');return}
+        var time = Math.round(new Date().getTime()/1000);
+        var postId = parentPost.querySelector('.id').textContent;
+        var author = parentPost.querySelector('.post-title').textContent;
+        var username = document.querySelector('.welcome-user').textContent.slice(15);
+        var user = new USER(username);
+        user.comment(postId,author,time,comment)
+        var commentList = parentPost.querySelector('.comment-list');
+        commentList.innerHTML += `
+                    <p class="comment-item">
+                        <span>${author}</span> ${comment}
+                    </p>`
+        console.log(event.target.parentNode.parentNode.classList)
+        if(!parentPost.querySelector('.view-more') && commentList.childElementCount>2){
+            commentList.style.height = '60px';
+            var newEl = document.createElement('div');
+            newEl.classList.add('view-more');
+            newEl.innerHTML = `View all ${commentList.childElementCount} comments`;
+            insertAfter( newEl,commentList)
+        }
+        if(parentPost.querySelector('.view-more')){
+            commentList.style.height = '60px';
+            parentPost.querySelector('.view-more').innerHTML = `View all ${commentList.childElementCount} comments`;
+        }
+        event.target.value = '';
+    }
+})
+
+
+
 
 
 

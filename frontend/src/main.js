@@ -1,5 +1,5 @@
 // importing named exports we use brackets
-import { displayPosts } from './helpers.js';
+import { getPosts} from './helpers.js';
 
 // when importing 'default' exports, use below syntax
 import API from './api.js';
@@ -49,22 +49,37 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             document.querySelector('#main').style.display = 'block';
             document.querySelector('#footer').style.display = 'block';
             document.querySelector('.user').style.display = 'block';
-            document.querySelector('.id').textContent = username;
-            const user  = new USER(username);
-            //get user info
-            var userInfo = user.getUserInfo();
-                userInfo
-                    .then(rsp => {
-                        console.log(rsp);
-                        document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
-                        document.querySelector('.welcome-user').style.display = 'block';
-                    })
-            //get feed
-                var feed = user.getFollowFeed(0,2)
-                    feed
-                        .then(posts => {
-                            displayPosts(posts);
-                        })
+            document.querySelector('.current_user').textContent = username;
+            getPosts(username,0,10);
+
+            // const user  = new USER(username);
+            // //get user info
+            // var selfPosts;
+            // var userInfo = user.getUserInfo();
+            //     userInfo
+            //         .then(rsp => {
+            //             console.log(rsp);
+            //             selfPosts = rsp['posts'];
+            //             document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
+            //             document.querySelector('.welcome-user').style.display = 'block';
+            //             // var selfFeeds = user.getSelfFeed(selfPosts);
+            //             var otherFeedPromise = user.getFollowFeed(0,10);
+            //             otherFeedPromise
+            //                 .then(rsp => {
+            //                     var otherPosts = rsp['posts'];
+            //                     user.getSelfFeed(selfPosts, otherPosts)
+            //                 });
+            //         })
+
+
+
+
+
+                // var feed = user.getFollowFeed(0,2)
+                //     feed
+                //         .then(posts => {
+                //             displayPosts(posts);
+                //         })
             // //follow
             //    user.follow('Anon');
         })
