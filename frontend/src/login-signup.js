@@ -84,29 +84,58 @@ document.addEventListener('mouseup', function (e) {
 
 
 
+
+
 //click heart - like
-document.querySelector('.heart').addEventListener('click', function (e) {
-    e.preventDefault();
-    this.style.display = 'none';
-    document.querySelector('.heart-solid').style.display = 'inline-block';
+document.querySelector('#large-feed').addEventListener('click', function (event) {
+   event.preventDefault();
+  if (event.target.classList.contains('heart')) {
+      event.target.style.display = 'none';
+      var solid = event.target.parentNode.childNodes[3];
+      solid.style.display = 'inline-block';
+  }
 })
 
+
 //click solid heart - unlike
-document.querySelector('.heart-solid').addEventListener('click', function (e) {
-    e.preventDefault();
-    this.style.display = 'none';
-    document.querySelector('.heart').style.display = 'inline-block';
+document.querySelector('#large-feed').addEventListener('click', function (event) {
+   event.preventDefault();
+  if (event.target.classList.contains('heart-solid')) {
+      event.target.style.display = 'none';
+      var heart = event.target.parentNode.childNodes[1];
+      heart.style.display = 'inline-block';
+  }
 })
+
+
+//click comment icon
+document.querySelector('#large-feed').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('comment')) {
+      var commentIcon = event.target.parentNode.childNodes[5];
+      console.log(commentIcon);
+      var input = commentIcon.parentNode.parentNode.parentNode.childNodes[9];
+        if(input.style.display == 'table'){
+            input.style.display = 'none';
+            input.childNodes[2].value = '';
+        }else{
+             input.style.display = 'table';
+        }
+    }
+})
+
+
 
 //click comment icon
 document.querySelector('.comment').addEventListener('click', function (e) {
     e.preventDefault();
-    var inputDisplay = document.querySelector('.comment-input').style.display;
-    if(inputDisplay == 'table'){
-        document.querySelector('.comment-input').style.display = 'none';
-        document.querySelector('.add-comment').value = '';
+    var input = this.parentNode.parentNode.parentNode.childNodes[4];
+    if(input.style.display == 'table'){
+        input.style.display = 'none';
+        input.childNodes[2].value = '';
+        // document.querySelector('.add-comment').value = '';
     }else{
-         document.querySelector('.comment-input').style.display = 'table';
+         input.style.display = 'table';
     }
 })
 
