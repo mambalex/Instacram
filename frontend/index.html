@@ -6,29 +6,194 @@
     <title>Instacram</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- You can add your styles and scripts here -->
+    <link rel="stylesheet" href="styles/landing.css">
+    <link rel="stylesheet" type="text/css" href="styles/login-signup.css">
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
     <script type="module" src="src/helpers.js"></script>
     <script type="module" src="src/api.js"></script>
 </head>
 <body>
+    <div class="landing">
+        <div id="landing-header">
+            <h1>Welcome to Instacram!</h1>
+            <a  class="btn btn-lg btn-success get-started">Get Started</a>
+        </div>
+
+        <ul class="slideshow">
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+          <li></li>
+        </ul>
+    </div>
     <!-- This is an example app structure --> 
     <header class='banner'>
-        <h1>Instacram</h1>
-        <ul class='nav'>
-            <li class="nav-item"><input type="file"/></li>
-            <li class='nav-item'>Icon</li>
-            <li class='nav-item'>Icon</li>
-        </ul>
+
+                    <h1>Instacram</h1>
+                    <div class="welcome-user">
+                          Welcome, John
+                    </div>
+                    <div class="user">
+                        <i class="fas fa-user-alt"></i>
+                        <div class="dropdown-content">
+                            <a href="/profile/student" id="profile">My Profile</a>
+                            <a href="/" id="logout">Logout</a>
+                        </div>
+                    </div>
+        <div class="btn btn-light nav-upload">
+                                    New Post
+        </div>
+        <!--<h1>Instacram</h1>-->
+        <!--<ul class='nav'>-->
+            <!--<li class="nav-item"><input type="file"/></li>-->
+            <!--<li class='nav-item'>Icon</li>-->
+            <!--<li class='nav-item'>Icon</li>-->
+            <!--<li class='nav-item'>Login</li>-->
+        <!--</ul>-->
     </header>
-    <main role='main'>
+    <main role='main' id="main">
         <!-- app goes here --> 
         <div id='large-feed'>
             <!-- inject feed data -->
+            <section class="post">
+                <h2 class="post-title">Nina</h2>
+                <img src="/images/1_h.jpg" alt="My lounge" class="post-image">
+                <div class="content">
+                    <div class="icon">
+                        <i class="far fa-heart fa-lg heart"></i>
+                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
+                        <i class="far fa-comment fa-lg comment"></i>
+                        <!--<i class="fas fa-comment fa-lg" id="comment-solid"></i>-->
+                    </div>
+                    <p class="likes">36 likes</p>
+                    <p class="caption">
+                        <span>socleansofreshh</span> When you're too ready for summer '18 ☀️</p>
+                </div>
+                <div class="input-group mb-3 comment-input" style="display: none">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" ></span>
+                      </div>
+                      <input type="text" class="form-control add-comment"
+                             placeholder="Add a comment..."
+                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
+                <div class="time">6 Nov 2016, 11:23</div>
+            </section>
         </div>
     </main>
-    <footer>
-        <p>Instacram example</p>
+
+    <div class="container">
+				<div class="backbox">
+					<div class="loginMsg">
+						<div class="textcontent">
+							<p class="title">Don't have an account?</p>
+							<p>Sign up to start your journey.</p>
+							<button id="switch1">Sign Up</button>
+						</div>
+					</div>
+					<div class="signupMsg visibility">
+						<div class="textcontent">
+							<p class="title">Have an account?</p>
+							<p>Log in to see all your collection.</p>
+							<button id="switch2">LOG IN</button>
+						</div>
+					</div>
+				</div>
+				<!-- backbox -->
+
+				<div class="frontbox">
+					<form class="login">
+						<h2>LOG IN</h2>
+						<div class="inputbox">
+							<div class="input-icon">
+								<i class="fas fa-user-alt"></i>
+								<input type="text" name="email" id="login-username" placeholder="USERNAME">
+							</div>
+							<div class="input-icon">
+								<i class="fas fa-lock"></i>
+								<input type="password" name="password" id="login-password" placeholder="PASSWORD">
+							</div>
+						</div>
+						<!--<p>FORGET PASSWORD?</p>-->
+						<div class="btn btn-success ld-ext-right" id='login-btn'>
+                                    LOG IN
+                                    <div class="ld ld-ring ld-spin"></div>
+                       </div>
+						<!--<button id='login-btn' type="submit">LOG IN</button>-->
+						 <div id="successAlert" class="alert alert-success longin-alert" role="alert" style="display:none;">Successfully login</div>
+          				<div id="errorAlert" class="alert alert-danger longin-alert" role="alert" style="display:none;">Invalid Username/Password</div>
+					</form>
+
+					<form class="signup hide">
+						<h2>SIGN UP</h2>
+						<div class="inputbox">
+							<div class="input-icon">
+								<i class="fas fa-user-alt"></i>
+								<input type="text" id='signup-username' name="fullname" placeholder="USERNAME">
+							</div>
+							<div class="input-icon">
+								<i class="fas fa-lock"></i>
+								<input type="password" id='signup-password' name="password" placeholder="PASSWORD">
+							</div>
+							<div class="input-icon">
+								<i class="fas fa-user"></i>
+								<input type="text" id='signup-name' placeholder="FULL NAME">
+							</div>
+							<div class="input-icon">
+								<i class="fas fa-envelope"></i>
+								<input type="text" id='signup-email' placeholder="EMAIL">
+							</div>
+						</div>
+						<div class="btn btn-success ld-ext-right" id='signup-btn'>
+                                    SIGN UP
+                                    <div class="ld ld-ring ld-spin"></div>
+                       </div>
+						<!--<button id='signup-btn' type="submit">SIGN UP</button>-->
+						<div id="successAlert2" class="alert alert-success signup-alert" role="alert" style="display:none;">Successfully sign up</div>
+						<div id="errorAlert2" class="alert alert-danger signup-alert" role="alert" style="display:none;"></div>
+
+					</form>
+					</div>
+	</div>
+    <div class="upload-files" >
+              <div class="alert alert-success" role="alert" style="display:none;"></div>
+              <div class="alert alert-danger" role="alert" style="display:none;"></div>
+              <div class="upload-files-header"><h4>New Post</h4></div>
+                  <br>
+                  <textarea class="form-control description" rows="5" placeholder="Description"></textarea><br>
+
+
+              <form enctype="multipart/form-data">
+
+                  <!-- COMPONENT START -->
+                  <div class="form-group">
+                    <label for="inputFile">File input</label>
+                    <input type="file" id="inputFile">
+                      <br>
+                  </div>
+                  <!-- COMPONENT END -->
+                  <div class="form-group">
+                      <div class="id"></div>
+                      <div class="btn btn-primary ld-ext-right pull-right upload-btn">
+                                    Save
+                                    <div class="ld ld-ring ld-spin"></div>
+                       </div>
+
+                      <button type="reset" class="btn btn-danger reset">Reset</button>
+                  </div>
+              </form>
+          </div>
+    <div class="layer"></div>
+    <div class="layer2"></div>
+    <i class="fas fa-times" id="remove-layer"></i>
+    <footer id="footer">
+        <!--<p>Instacram example</p>-->
     </footer>
     <script type="module" src="src/main.js"></script>
+    <script type="module" src="src/login-signup.js"></script>
 </body>
 </html>

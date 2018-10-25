@@ -58,7 +58,7 @@ export function uploadImage(event) {
     
     // if we get here we have a valid image
     const reader = new FileReader();
-    
+
     reader.onload = (e) => {
         // do something with the data result
         const dataURL = e.target.result;
@@ -82,4 +82,64 @@ export function checkStore(key) {
     else
         return null
 
+}
+
+function timeConverter(t) {
+    var a = new Date(t * 1000);
+    var today = new Date();
+    var yesterday = new Date(Date.now() - 86400000);
+    var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    if (a.setHours(0,0,0,0) == today.setHours(0,0,0,0))
+        return 'today, ' + hour + ':' + min;
+    else if (a.setHours(0,0,0,0) == yesterday.setHours(0,0,0,0))
+        return 'yesterday, ' + hour + ':' + min;
+    else if (year == today.getFullYear())
+        return date + ' ' + month + ', ' + hour + ':' + min;
+    else
+        return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
+}
+
+export function displayPosts(posts) {
+    console.log(posts);
+    posts['posts'].forEach(function (post) {
+        const id = post['id'];
+        const author = post['meta']['author'];
+        const description = post['meta']['description_text'];
+        const likes = post['meta']['likes'].length;
+        const path = post['src'];
+        const timeStamp = post['meta']['published'];
+        const time = timeConverter(timeStamp);
+        const container = document.querySelector('#large-feed');
+        container.innerHTML += `
+            <section class="post">
+                <div class="id">${id}</div>
+                <h2 class="post-title">${author}</h2>
+                <img src="data:image/png;base64,${path}" alt="My lounge" class="post-image">
+                <div class="content">
+                    <div class="icon">
+                        <i class="far fa-heart fa-lg heart"></i>
+                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
+                        <i class="far fa-comment fa-lg comment"></i>
+                    </div>
+                    <p class="likes">${likes} likes</p>
+                    <p class="caption">
+                        <span>${author}</span>${description}️</p>
+                </div>
+                <div class="input-group mb-3 comment-input" style="display: none">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" ></span>
+                      </div>
+                      <input type="text" class="form-control add-comment"
+                             placeholder="Add a comment..."
+                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
+                <div class="time">${time}</div>
+            </section>
+        `
+    })
 }
