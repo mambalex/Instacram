@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- You can add your styles and scripts here -->
     <link rel="stylesheet" href="styles/landing.css">
+    <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" type="text/css" href="styles/login-signup.css">
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
@@ -92,6 +93,8 @@
         </div>
     </main>
 
+
+<!--login&signup popup-->
     <div class="container">
 				<div class="backbox">
 					<div class="loginMsg">
@@ -165,6 +168,8 @@
 					</form>
 					</div>
 	</div>
+
+<!--upload files popup-->
     <div class="upload-files" >
               <div class="alert alert-success" role="alert" style="display:none;"></div>
               <div class="alert alert-danger" role="alert" style="display:none;"></div>
@@ -193,6 +198,37 @@
                   </div>
               </form>
           </div>
+<!--profile popup-->
+    <div class="container2">
+    <div class="save"><button class="btn btn-primary" id="save"><span class="glyphicon glyphicon-floppy-saved"></span> Save</button>
+    </div>
+    <div class="leftbox">
+        <nav>
+            <a id="profile2" class="active"><i class="fa fa-user"></i></a>
+            <a id="privacy"><i class="fa fa-tasks"></i></a>
+            <a id="settings"><i class="fa fa-cog"></i></a>
+        </nav>
+    </div>
+    <div class="rightbox">
+        <div class="profile">
+            <div class="alert alert-success" role="alert" style="display:none;">Successfully updated!</div>
+            <div  class="alert alert-danger" role="alert" style="display:none;">Oops! Something went wrong!</div>
+            <h1>Personal Info</h1>
+            <h2>Full Name</h2>
+            <div class="edit-row"><p id="name">Julie Park</p><span class="update">update</span></div>
+            <h2>Email</h2>
+            <div class="edit-row"><p id='email'>example@example.com</p><span class="update">update</span></div>
+            <h2>Password </h2>
+            <div class="edit-row"><p type='password' id='password'>•••••••</p><span class="update">change</span></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
     <div class="layer"></div>
     <div class="layer2"></div>
     <i class="fas fa-times" id="remove-layer"></i>

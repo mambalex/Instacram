@@ -261,6 +261,36 @@ export default class USER {
                 }
             )
     }
+    /**
+     * @ update profile
+     */
+    updateProfile(name, email, password) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = '/user/';
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({'name':name, 'email':email, 'password':password})
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    console.log(rsp)
+                    document.querySelector('.profile .alert-success').style.display = 'block';
+                    document.querySelector('.welcome-user').textContent = `Welcome back,  ${name}`
+                    setTimeout(function () {
+                        document.querySelector('.profile .alert-success').style.display = 'none';
+                    },1000)
+                }
+            )
+    }
+
+
+
+
 
 }
 

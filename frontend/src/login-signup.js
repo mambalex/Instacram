@@ -1,5 +1,18 @@
 import USER from './user.js';
 
+
+
+//nav get start
+document.querySelector('.get-started').addEventListener('click', function() {
+    document.querySelector('.landing').style.display = 'none';
+    document.querySelector('.banner').style.display = 'flex';
+    document.querySelector('.container').style.display = 'inline-flex';
+    document.querySelector('.layer').style.display = 'block';
+    document.querySelector('.layer2').style.display = 'block';
+    document.querySelector('#remove-layer').style.display = 'block';
+})
+
+
 //dropdown
 document.querySelector('.user').addEventListener('click', function(e) {
     e.preventDefault();
@@ -56,15 +69,7 @@ document.querySelector('#remove-layer').addEventListener('click', function() {
 })
 
 
-//nav login
-document.querySelector('.get-started').addEventListener('click', function() {
-    document.querySelector('.landing').style.display = 'none';
-    document.querySelector('.banner').style.display = 'flex';
-    document.querySelector('.container').style.display = 'inline-flex';
-    document.querySelector('.layer').style.display = 'block';
-    document.querySelector('.layer2').style.display = 'block';
-    document.querySelector('#remove-layer').style.display = 'block';
-})
+
 
 
 //show new post window
@@ -76,6 +81,26 @@ document.querySelector('.nav-upload').addEventListener('click', function() {
 //close new post window
 document.addEventListener('mouseup', function (e) {
     var container = document.querySelector('.upload-files');
+    var isClickInside = container.contains(e.target);
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!isClickInside)
+    {
+        container.style.display = 'none';
+    }
+});
+
+//click nav profile
+document.querySelector('#profile').addEventListener('click', function (e) {
+    e.preventDefault();
+    // document.querySelector('.layer').style.display = 'block';
+    // document.querySelector('.layer2').style.display = 'block';
+    document.querySelector('.container2').style.display = 'block';
+})
+
+
+//close profile popup
+document.addEventListener('mouseup', function (e) {
+    var container = document.querySelector('.container2');
     var isClickInside = container.contains(e.target);
     // if the target of the click isn't the container nor a descendant of the container
     if (!isClickInside)
@@ -175,7 +200,7 @@ document.querySelector('#large-feed').addEventListener('keypress', function (eve
         user.comment(postId,author,time,comment)
         var commentList = parentPost.querySelector('.comment-list');
         commentList.innerHTML += `
-                    <p class="comment-item">
+                    <p class='comment-item'>
                         <span>${author}</span> ${comment}
                     </p>`
         console.log(event.target.parentNode.parentNode.classList)
@@ -254,6 +279,53 @@ document.querySelector('#signup-btn').addEventListener('click',function (e){
         })
     
 });
+
+
+
+
+
+//profile click update
+document.querySelectorAll('.update').forEach(function (val) {
+    val.addEventListener('click',function (e){
+    e.preventDefault();
+    var data_to_update = e.target.previousSibling;
+    if(!data_to_update.textContent){
+        alert('Can not be empty')
+        return
+    }
+    if(e.target.textContent == 'update'){
+        e.target.textContent = 'confirm';
+        data_to_update.setAttribute('contenteditable', 'true');
+        data_to_update.focus();
+        }else{
+            data_to_update.setAttribute('contenteditable', 'false');
+            e.target.textContent = 'update';
+        }
+    });
+})
+
+//update profile
+document.querySelector('#save').addEventListener('click',function (e) {
+    e.preventDefault();
+    var flag = true;
+    document.querySelectorAll('.update').forEach(function (val) {
+        if(val.textContent == 'confirm'){
+            alert('Please confirm your changes!')
+            flag = false;
+            return
+        }
+    })
+    if(flag){
+        var name = document.querySelector('#name').textContent;
+        var email = document.querySelector('#email').textContent;
+        var password = document.querySelector('#password').textContent;
+        var username = document.querySelector('.welcome-user').textContent.slice(15);
+        var user = new USER(username)
+        user.updateProfile(name,email,password)
+    }
+})
+
+
 
 
 

@@ -222,6 +222,13 @@
 	display: none;
 }
 
+.inputbox input{
+	outline:none !important;
+}
+
+.inputbox input:focus{
+		outline:none !important;
+}
 
 
 

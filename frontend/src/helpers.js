@@ -130,12 +130,14 @@ function timeConverter(t) {
     var nowHour = now.getHours();
     var nowMin = now.getMinutes();
     if (a.setHours(0,0,0,0) == today.setHours(0,0,0,0)) {
+        var secondGap = now.getTime()/1000 - t;
+        console.log(secondGap);
         var hourGap = nowHour - hour;
         var minGap = nowMin - min;
-        if (minGap > 60) {
+        if (secondGap > 3600) {
             return `${hourGap} hours ago`
         } else {
-            if(minGap==1){return '1 minute ago'}else{return `${minGap} minutes ago`}
+            if(minGap==0){return '1 minute ago'}else{return `${minGap} minutes ago`}
         }
         // return 'today, ' + hour + ':' + min;
     }else if (a.setHours(0,0,0,0) == yesterday.setHours(0,0,0,0))
@@ -145,6 +147,7 @@ function timeConverter(t) {
     else
         return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
 }
+
 
 
 
@@ -226,6 +229,8 @@ export function getPosts(username, p, n) {
                 userInfo
                     .then(rsp => {
                         console.log(rsp);
+                        document.querySelector('#name').textContent = rsp['name'];
+                        document.querySelector('#email').textContent = rsp['email'];
                         selfPosts = rsp['posts'];
                         document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
                         document.querySelector('.welcome-user').style.display = 'block';
