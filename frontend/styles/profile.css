@@ -190,3 +190,7 @@
 .container2 .noshow {
     opacity: 0;
 }
+
+.leftbox i{
+    cursor: pointer;
+}

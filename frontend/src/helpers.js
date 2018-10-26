@@ -154,6 +154,7 @@ function timeConverter(t) {
 export function displayPosts(posts) {
     console.log(posts);
     posts = sortPosts(posts)
+    var currentUserId = document.querySelector('.current_user_id').textContent;
     const container = document.querySelector('#large-feed');
     // remove all children
     while (container.firstChild) {
@@ -168,9 +169,14 @@ export function displayPosts(posts) {
         const path = post['src'];
         const timeStamp = post['meta']['published'];
         const time = timeConverter(timeStamp);
-        if(likes != 0){
-            likes = post['meta']['likes'][0];
-        }
+        var likeDisplay = 'inline-block';
+        var solidLikeDisplay = 'none';
+        post['meta']['likes'].forEach(function (val) {
+            if( val == currentUserId){
+                likeDisplay = 'none';
+                solidLikeDisplay = 'inline-block'
+            }
+        })
         var commentsDiv = '';
         if(comments.length > 2){
             commentsDiv  += `<div class='comment-list' style='height:60px'>`
@@ -198,8 +204,8 @@ export function displayPosts(posts) {
                 <img src="data:image/png;base64,${path}" alt="My lounge" class="post-image">
                 <div class="content">
                     <div class="icon">
-                        <i class="far fa-heart fa-lg heart"></i>
-                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
+                  <i class="far fa-heart fa-lg heart" style="display: ${likeDisplay}"></i>
+                 <i class="fas fa-heart fa-lg heart-solid" style="display: ${solidLikeDisplay}"></i>
                         <i class="far fa-comment fa-lg comment"></i>
                     </div>
                     <p class="likes">${likes} likes</p>
@@ -224,22 +230,23 @@ export function displayPosts(posts) {
 export function getPosts(username, p, n) {
             const user  = new USER(username);
           //get user info
-            var selfPosts;
+          //   var selfPosts;
             var userInfo = user.getUserInfo();
                 userInfo
                     .then(rsp => {
                         console.log(rsp);
                         document.querySelector('#name').textContent = rsp['name'];
                         document.querySelector('#email').textContent = rsp['email'];
-                        selfPosts = rsp['posts'];
+                        // selfPosts = rsp['posts'];
                         document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
                         document.querySelector('.welcome-user').style.display = 'block';
-                        // var selfFeeds = user.getSelfFeed(selfPosts);
+                        document.querySelector('.current_user_id').textContent = rsp['id'];
                         var otherFeedPromise = user.getFollowFeed(p,n);
                         otherFeedPromise
                             .then(rsp => {
                                 var otherPosts = rsp['posts'];
-                                user.getSelfFeed(selfPosts, otherPosts)
+                                displayPosts(otherPosts);
+                                // user.getSelfFeed(selfPosts, otherPosts)
                             });
                     })
 }

@@ -123,8 +123,8 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
       likes = parseInt(likes)+1;
       var solid = event.target.parentNode.childNodes[3];
       solid.style.display = 'inline-block';
-      var username = document.querySelector('.welcome-user').textContent.slice(15);
-      var user = new USER(username)
+      var username = document.querySelector('.current_user').textContent;
+      var user = new USER(username);
       user.like(id);
       event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
   }
@@ -141,7 +141,7 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
       likes = parseInt(likes)-1;
       var heart = event.target.parentNode.childNodes[1];
       heart.style.display = 'inline-block';
-      var username = document.querySelector('.welcome-user').textContent.slice(15);
+      var username = document.querySelector('.current_user').textContent;
       var user = new USER(username)
       user.unlike(id);
       event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
@@ -319,7 +319,7 @@ document.querySelector('#save').addEventListener('click',function (e) {
         var name = document.querySelector('#name').textContent;
         var email = document.querySelector('#email').textContent;
         var password = document.querySelector('#password').textContent;
-        var username = document.querySelector('.welcome-user').textContent.slice(15);
+        var username = document.querySelector('.current_user').textContent;
         var user = new USER(username)
         user.updateProfile(name,email,password)
     }

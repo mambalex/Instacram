@@ -103,7 +103,7 @@ footer {
 
 /* Add your styles here */
 
-.id, .current_user{
+.id, .current_user, .current_user_id{
     display: none;
 }
 
