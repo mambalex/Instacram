@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- You can add your styles and scripts here -->
     <link rel="stylesheet" href="styles/landing.css">
+    <link rel="stylesheet" href="styles/user-page.css">
     <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" type="text/css" href="styles/login-signup.css">
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
@@ -33,15 +34,18 @@
     </div>
     <!-- This is an example app structure --> 
     <header class='banner'>
-
                     <h1>Instacram</h1>
+                    <div class="input-group search">
+                      <input type="text" class="form-control search-input" placeholder="Search...">
+                    </div>
                     <div class="welcome-user">
                           Welcome, John
                     </div>
                     <div class="user">
                         <i class="fas fa-user-alt"></i>
                         <div class="dropdown-content">
-                            <a href="/profile/student" id="profile">My Profile</a>
+                            <a  id="profile">My Profile</a>
+                            <a  id="my-posts">My Posts</a>
                             <a href="/" id="logout">Logout</a>
                         </div>
                     </div>
@@ -224,6 +228,53 @@
         </div>
     </div>
 </div>
+
+<!--user page-->
+    <div class="user-page-wrapper">
+        <div class="user-page">
+        <header>
+            <div class="header-left">
+                <h1 class="popup-user">Mambalex</h1>
+                <div class="btn btn-primary follow-btn" id="follow-btn">Follow</div>
+                <div class="btn btn-success following-btn" id="following-btn">Following</div>
+            </div>
+            <div class="header-right">
+                <ul>
+                    <li><div class="popup-post-num">55</div>posts</li>
+                    <li><div class="popup-follower">123</div>followers</li>
+                    <li><div class="popup-following">102</div>following</li>
+                </ul>
+            </div>
+        </header>
+        <div class="breaker">
+            <a class="nav-posts select"><span></span>POSTS</a>
+            <!--<a class="nav-followers"><span></span>FOLLOWERS</a>-->
+            <a class="nav-following"><span></span>FOLLOWING</a>
+        </div>
+        <div class="post-container">
+            <div class="post-item"></div>
+            <div class="post-item"></div>
+            <div class="post-item"></div>
+            <div class="post-item"></div>
+            <div class="post-item"></div>
+            <div class="post-item"></div>
+        </div>
+        <div class="following">
+            <div class="following-user">Alex<span class="id"></span></div>
+            <div class="following-user">Lucy</div>
+            <div class="following-user">David</div>
+            <div class="following-user">Bob</div>
+            <div class="following-user">Shan</div>
+        </div>
+        <!--<div class="followers">-->
+            <!--<div class="follower">Alex</div>-->
+            <!--<div class="follower">Alex</div>-->
+            <!--<div class="follower">Lucy</div>-->
+            <!--<div class="follower">Lucy</div>-->
+        <!--</div>-->
+    </div>
+
+    </div>
 
 
 

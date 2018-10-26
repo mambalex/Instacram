@@ -20,10 +20,15 @@ export default class USER {
     /**
      * @returns user info
      */
-    getUserInfo() {
+    getUserInfo(id,userName) {
         var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
         var userInfo;
-        var url = '/user';
+        var url = '/user/';
+        if(id){
+            url = `/user/?id=${id}`;
+        }else if(userName){
+            url = `/user/?username=${userName}`;
+        }
         var options = {
             method: 'GET',
             headers: {
@@ -33,6 +38,22 @@ export default class USER {
         }
         userInfo = api.makeAPIRequest(url,options);
         return userInfo;
+    }
+    /**
+     * @returns user info
+     */
+    getFeed(postId) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/?id=${postId}`;
+        var options = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var feed = api.makeAPIRequest(url,options);
+        return feed;
     }
     /**
      * @returns user info
@@ -174,13 +195,23 @@ export default class USER {
             }
         }
         var rsp = api.makeAPIRequest(url, options);
-        rsp
-            .then(rsp => {
-                    if (rsp['message'] == 'success') {
-                        alert('Congrats! Successfully followed!')
-                    }
-                }
-            )
+        return rsp;
+    }
+     /**
+     * @returns unfollow
+     */
+    unfollow(userName) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/user/unfollow?username=${userName}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        return rsp;
     }
     /**
      * @ like
@@ -287,10 +318,6 @@ export default class USER {
                 }
             )
     }
-
-
-
-
 
 }
 

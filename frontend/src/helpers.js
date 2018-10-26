@@ -201,7 +201,7 @@ export function displayPosts(posts) {
             <section class="post">
                 <div class="id">${id}</div>
                 <h2 class="post-title">${author}</h2>
-                <img src="data:image/png;base64,${path}" alt="My lounge" class="post-image">
+                <img src="data:image/png;base64,${path}" alt="img" class="post-image">
                 <div class="content">
                     <div class="icon">
                   <i class="far fa-heart fa-lg heart" style="display: ${likeDisplay}"></i>
@@ -210,7 +210,7 @@ export function displayPosts(posts) {
                     </div>
                     <p class="likes">${likes} likes</p>
                     <p class="caption">
-                        <span>${author}</span>${description}️</p>
+                        <span class="author">${author}</span>${description}️</p>
                 </div>
                 ${commentsDiv}
                 <div class="input-group mb-3 comment-input" style="display: none">
@@ -226,6 +226,94 @@ export function displayPosts(posts) {
         `
     })
 }
+
+export async function checkIfFollow(userId) {
+    var followOrNot = false;
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    var info = user.getUserInfo();
+    info.then(rsp => {
+        console.log(rsp);
+        if(!rsp['following']){return followOrNot}
+        rsp['following'].forEach(function (val) {
+            if(val==userId){
+                followOrNot = true;
+            }
+        })
+    })
+}
+
+export  function displayUserPage(userId) {
+        var username = document.querySelector('.current_user').textContent;
+        var user = new USER(username);
+        var followOrNot = false;
+        var selfInfo = user.getUserInfo()
+        selfInfo
+            .then(info =>{
+                info['following'].forEach(function (id) {
+                    if(id==userId){
+                        followOrNot = true;
+                    }
+                })
+                var userInfo = user.getUserInfo(userId);
+        userInfo
+            .then(info => {
+                console.log(info)
+                userId = info['id'];
+                var posts = info['posts'];
+                var name = info['name'];
+                var followedNum = info['followed_num'];
+                var following = info['following'];
+                document.querySelector('.popup-user').textContent = name;
+                document.querySelector('.popup-post-num').textContent = posts.length;
+                document.querySelector('.popup-follower').textContent = followedNum
+                document.querySelector('.popup-following').textContent = following.length;
+                //display button
+                if(followOrNot){
+                    document.querySelector('#follow-btn').style.display = 'none';
+                    document.querySelector('#following-btn').style.display = 'inline-block';
+                }else{
+                    document.querySelector('#follow-btn').style.display = 'inline-block';
+                    document.querySelector('#following-btn').style.display = 'none';
+                }
+                //display all post
+                var container = document.querySelector('.post-container');
+                // remove all children
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+                //append all posts
+                posts.forEach(function (postId) {
+                    var feed = user.getFeed(postId);
+                    feed
+                        .then(rsp => {
+                            container.innerHTML += `
+                <img src="data:image/png;base64,${rsp['thumbnail']}" class="post-item">`
+                        })
+                })
+                //display all following
+                var flwingContainer = document.querySelector('.following');
+                // remove all children
+                while (flwingContainer.firstChild) {
+                    flwingContainer.removeChild(flwingContainer.firstChild);
+                }
+                //append all following users
+                following.forEach(function (userId) {
+                    var userInfo = user.getUserInfo(userId);
+                    userInfo
+                        .then(rsp => {
+                            flwingContainer.innerHTML += `
+         <div class="following-user">${rsp['name']}<span class="id">${rsp['id']}</span></div>`
+                        })
+                })
+            })
+
+
+            })
+
+}
+
+
 
 export function getPosts(username, p, n) {
             const user  = new USER(username);

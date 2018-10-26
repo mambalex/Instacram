@@ -24,6 +24,7 @@ html, body {
 
 #main{
     display: none;
+    backgroud: #fafafa;
 }
 
 footer {
@@ -67,6 +68,7 @@ footer {
     padding: 20px 40px;
     margin: 0;
     border-bottom: 1px solid rgba(0,0,0,.0975);
+    cursor: pointer;
 }
 
 .post-thumb {
@@ -301,6 +303,7 @@ footer {
 .caption span, .comment-item span{
     font-weight: 450;
     margin-right: 20px;
+    cursor: pointer;
 }
 
 
@@ -327,4 +330,9 @@ footer {
     margin: 0 20px 20px 20px;
     float:left;
     color:#777;
+}
+
+.search{
+    margin-right: 44%;
+    width: 200px;
 }

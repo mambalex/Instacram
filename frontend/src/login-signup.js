@@ -1,4 +1,5 @@
 import USER from './user.js';
+import {displayUserPage, checkIfFollow} from './helpers.js';
 
 
 
@@ -98,6 +99,7 @@ document.querySelector('#profile').addEventListener('click', function (e) {
 })
 
 
+
 //close profile popup
 document.addEventListener('mouseup', function (e) {
     var container = document.querySelector('.container2');
@@ -108,6 +110,138 @@ document.addEventListener('mouseup', function (e) {
         container.style.display = 'none';
     }
 });
+
+
+
+//click posts
+document.querySelector('.nav-posts').addEventListener('click', function (e) {
+    e.preventDefault();
+    // document.querySelector('.followers').style.display = 'none';
+    document.querySelector('.following').style.display = 'none';
+    document.querySelector('.post-container').style.display = 'flex';
+     document.querySelector('.nav-posts').classList.add('select')
+    document.querySelector('.nav-following').classList.remove('select')
+    // document.querySelector('.nav-followers').classList.remove('select')
+})
+
+
+//click following
+document.querySelector('.nav-following').addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector('.post-container').style.display = 'none';
+    // document.querySelector('.followers').style.display = 'none';
+    document.querySelector('.following').style.display = 'flex';
+    document.querySelector('.nav-following').classList.add('select')
+    document.querySelector('.nav-posts').classList.remove('select')
+    // document.querySelector('.nav-followers').classList.remove('select')
+})
+
+
+
+//click followers
+// document.querySelector('.nav-followers').addEventListener('click', function (e) {
+//     e.preventDefault();
+//     document.querySelector('.post-container').style.display = 'none';
+//     document.querySelector('.following').style.display = 'none';
+//     document.querySelector('.followers').style.display = 'flex';
+//     document.querySelector('.nav-posts').classList.remove('select')
+//     document.querySelector('.nav-following').classList.remove('select')
+//     document.querySelector('.nav-followers').classList.add('select')
+// })
+
+
+
+
+//click nav post
+document.querySelector('#my-posts').addEventListener('click', function (e) {
+    e.preventDefault();
+    var currentUserId = document.querySelector('.current_user_id').textContent;
+    displayUserPage(currentUserId);
+    document.querySelector('.user-page-wrapper').style.display = 'block';
+})
+
+
+//close user page popup
+document.addEventListener('mouseup', function (e) {
+    var container = document.querySelector('.user-page-wrapper');
+    var isClickInside = container.contains(e.target);
+    // if the target of the click isn't the container nor a descendant of the container
+    if (!isClickInside)
+    {
+        container.style.display = 'none';
+    }
+});
+
+
+//click post author popup
+document.querySelector('#large-feed').addEventListener('click', function (event) {
+    event.preventDefault();
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    if (event.target.classList.contains('post-title') || event.target.classList.contains('author')) {
+        let username = event.target.textContent;
+        let userInfo = user.getUserInfo(false,username)
+        userInfo
+            .then(rsp => {
+                var userId = rsp['id'];
+                displayUserPage(userId);
+                document.querySelector('.user-page-wrapper').style.display = 'block';
+            })
+    }
+})
+
+//click following uers popup
+document.querySelector('.user-page').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('following-user')) {
+        let userId = event.target.parentNode.querySelector('.id').textContent;
+        displayUserPage(userId);
+        document.querySelector('.user-page-wrapper').style.display = 'block';
+    }
+})
+
+
+
+//click follow
+document.querySelector('.user-page').addEventListener('click', function (event) {
+    event.preventDefault();
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    if (event.target.classList.contains('follow-btn')) {
+        let username = event.target.parentNode.querySelector('.popup-user').textContent;
+        let userInfo = user.follow(username);
+        userInfo
+            .then(rsp => {
+              console.log(rsp);
+              event.target.style.display = 'none';
+              event.target.parentNode.querySelector('.following-btn').style.display = 'inline-block';
+              }
+            )
+    }
+})
+
+//click following
+document.querySelector('.user-page').addEventListener('click', function (event) {
+    event.preventDefault();
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    if (event.target.classList.contains('following-btn')) {
+        let username = event.target.parentNode.querySelector('.popup-user').textContent;
+        let userInfo = user.unfollow(username);
+        userInfo
+            .then(rsp => {
+              console.log(rsp);
+              event.target.style.display = 'none';
+              event.target.parentNode.querySelector('.follow-btn').style.display = 'inline-block';
+              }
+            )
+    }
+})
+
+
+
+
+
 
 
 
@@ -185,6 +319,8 @@ function insertAfter(newNode, referenceNode) {
 }
 
 
+
+
 //submit comment
 document.querySelector('#large-feed').addEventListener('keypress', function (event) {
     if(event.which == 13){
@@ -195,13 +331,13 @@ document.querySelector('#large-feed').addEventListener('keypress', function (eve
         var time = Math.round(new Date().getTime()/1000);
         var postId = parentPost.querySelector('.id').textContent;
         var author = parentPost.querySelector('.post-title').textContent;
-        var username = document.querySelector('.welcome-user').textContent.slice(15);
+        var username = document.querySelector('.current_user').textContent;
         var user = new USER(username);
         user.comment(postId,author,time,comment)
         var commentList = parentPost.querySelector('.comment-list');
         commentList.innerHTML += `
                     <p class='comment-item'>
-                        <span>${author}</span> ${comment}
+                        <span>${username}</span> ${comment}
                     </p>`
         console.log(event.target.parentNode.parentNode.classList)
         if(!parentPost.querySelector('.view-more') && commentList.childElementCount>2){
@@ -326,8 +462,27 @@ document.querySelector('#save').addEventListener('click',function (e) {
 })
 
 
-
-
+//search
+document.querySelector('.search-input').addEventListener('keypress', function (event) {
+    if(event.which == 13){
+        event.preventDefault();
+        var val = document.querySelector('.search-input').value;
+        var username = document.querySelector('.current_user').textContent;
+        var user = new USER(username)
+        var userInfo = user.getUserInfo(false,val);
+        userInfo
+            .then(rsp =>{
+                    if(rsp['message'] == 'User Not Found' ){
+                        alert('Sorry, no such user')
+                        return
+                    }else{
+                        displayUserPage(rsp['id']);
+                        document.querySelector('.user-page-wrapper').style.display = 'block';
+                    }
+                }
+            )
+    }
+})
 
 
 
