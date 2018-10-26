@@ -227,21 +227,6 @@ export function displayPosts(posts) {
     })
 }
 
-export async function checkIfFollow(userId) {
-    var followOrNot = false;
-    var username = document.querySelector('.current_user').textContent;
-    var user = new USER(username);
-    var info = user.getUserInfo();
-    info.then(rsp => {
-        console.log(rsp);
-        if(!rsp['following']){return followOrNot}
-        rsp['following'].forEach(function (val) {
-            if(val==userId){
-                followOrNot = true;
-            }
-        })
-    })
-}
 
 export  function displayUserPage(userId) {
         var username = document.querySelector('.current_user').textContent;
@@ -259,12 +244,13 @@ export  function displayUserPage(userId) {
         userInfo
             .then(info => {
                 console.log(info)
-                userId = info['id'];
+                let username = info['username'];
                 var posts = info['posts'];
                 var name = info['name'];
                 var followedNum = info['followed_num'];
                 var following = info['following'];
                 document.querySelector('.popup-user').textContent = name;
+                document.querySelector('.popup-username').textContent = username;
                 document.querySelector('.popup-post-num').textContent = posts.length;
                 document.querySelector('.popup-follower').textContent = followedNum
                 document.querySelector('.popup-following').textContent = following.length;
@@ -283,6 +269,7 @@ export  function displayUserPage(userId) {
                     container.removeChild(container.firstChild);
                 }
                 //append all posts
+                // posts = sortPosts(posts);
                 posts.forEach(function (postId) {
                     var feed = user.getFeed(postId);
                     feed

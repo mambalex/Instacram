@@ -1,5 +1,6 @@
 import USER from './user.js';
-import {displayUserPage, checkIfFollow} from './helpers.js';
+import {displayUserPage,getPosts} from './helpers.js';
+
 
 
 
@@ -176,8 +177,8 @@ document.addEventListener('mouseup', function (e) {
 //click post author popup
 document.querySelector('#large-feed').addEventListener('click', function (event) {
     event.preventDefault();
-    var username = document.querySelector('.current_user').textContent;
-    var user = new USER(username);
+    var currentUser = document.querySelector('.current_user').textContent;
+    var user = new USER(currentUser);
     if (event.target.classList.contains('post-title') || event.target.classList.contains('author')) {
         let username = event.target.textContent;
         let userInfo = user.getUserInfo(false,username)
@@ -205,17 +206,22 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
 //click follow
 document.querySelector('.user-page').addEventListener('click', function (event) {
     event.preventDefault();
-    var username = document.querySelector('.current_user').textContent;
-    var user = new USER(username);
+    var currentUser = document.querySelector('.current_user').textContent;
+    var user = new USER(currentUser );
     if (event.target.classList.contains('follow-btn')) {
-        let username = event.target.parentNode.querySelector('.popup-user').textContent;
+        let username = event.target.parentNode.querySelector('.popup-username').textContent;
+        if(username == currentUser){
+            alert('Sorry, you can\'t follow yourself');
+            return
+        }
         let userInfo = user.follow(username);
         userInfo
             .then(rsp => {
               console.log(rsp);
               event.target.style.display = 'none';
               event.target.parentNode.querySelector('.following-btn').style.display = 'inline-block';
-              }
+              getPosts(currentUser,0,10);
+            }
             )
     }
 })
@@ -223,8 +229,8 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
 //click following
 document.querySelector('.user-page').addEventListener('click', function (event) {
     event.preventDefault();
-    var username = document.querySelector('.current_user').textContent;
-    var user = new USER(username);
+    var currentUser = document.querySelector('.current_user').textContent;
+    var user = new USER(currentUser);
     if (event.target.classList.contains('following-btn')) {
         let username = event.target.parentNode.querySelector('.popup-user').textContent;
         let userInfo = user.unfollow(username);
@@ -233,6 +239,7 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
               console.log(rsp);
               event.target.style.display = 'none';
               event.target.parentNode.querySelector('.follow-btn').style.display = 'inline-block';
+               getPosts(currentUser,0,10);
               }
             )
     }
@@ -474,8 +481,10 @@ document.querySelector('.search-input').addEventListener('keypress', function (e
             .then(rsp =>{
                     if(rsp['message'] == 'User Not Found' ){
                         alert('Sorry, no such user')
+                        document.querySelector('.search-input').value = '';
                         return
                     }else{
+                        document.querySelector('.search-input').value = '';
                         displayUserPage(rsp['id']);
                         document.querySelector('.user-page-wrapper').style.display = 'block';
                     }

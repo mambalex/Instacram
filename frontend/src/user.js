@@ -1,5 +1,5 @@
 import API from './api.js';
-import {displayPosts} from './helpers.js';
+import {displayPosts,getPosts} from './helpers.js';
 // import {createElement} from './helpers.js';
 
 const api  = new API();
@@ -112,7 +112,6 @@ export default class USER {
      * @returns upload photo
      */
      upload() {
-            var user = this.username;
             let token = JSON.parse(localStorage.getItem(`${this.username}Token`));
             var descr = document.querySelector('.description').value;
             var file = document.querySelector('#inputFile').files[0];
@@ -140,43 +139,10 @@ export default class USER {
                         if(rsp['post_id']){
                             alert('Successfully loaded');
                             document.querySelector('.upload-files').style.display = 'none';
-                            var container = document.querySelector('#large-feed');
-                            var newPost = document.createElement('section');
-                            newPost.classList.add('post');
-                            newPost.innerHTML +=  `
-                <div class="id">${rsp['post_id']}</div>
-                <h2 class="post-title">${user}</h2>
-                <img src="data:image/png;base64,${base64}"  class="post-image">
-                <div class="content">
-                    <div class="icon">
-                        <i class="far fa-heart fa-lg heart"></i>
-                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
-                        <i class="far fa-comment fa-lg comment"></i>
-                    </div>
-                    <p class="likes">0 likes</p>
-                    <p class="caption">
-                        <span>${user}</span>${descr}️</p>
-                </div>
-                <div class="comment-list" ></div>
-                <div class="input-group mb-3 comment-input" style="display: none">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" ></span>
-                      </div>
-                      <input type="text" class="form-control add-comment"
-                             placeholder="Add a comment..."
-                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                </div>
-                <div class="time">now</div>
-        `
-
-
-                            container.insertBefore(newPost, container.firstChild);
-
-                        }else{
-                            alert(rsp['message'])
+                            document.querySelector('.description').value = '';
+                            document.querySelector('.reset').click();
+                            getPosts(0,10)
                         }
-                        document.querySelector('.description').value = '';
-                        document.querySelector('.reset').click();
                         }
                     )
                };
