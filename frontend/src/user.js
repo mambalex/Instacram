@@ -1,5 +1,5 @@
 import API from './api.js';
-import {displayPosts,getPosts} from './helpers.js';
+import {displayPosts,getPosts,sortPosts} from './helpers.js';
 // import {createElement} from './helpers.js';
 
 const api  = new API();
@@ -58,7 +58,7 @@ export default class USER {
     /**
      * @returns user info
      */
-    getSelfFeed(posts, otherPosts) {
+    userPagePosts(posts) {
         var array=[];
         var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
         var options = {
@@ -82,12 +82,17 @@ export default class USER {
 
             }
             if(i == posts.length){
-                var totalPosts = array.concat(otherPosts);
-                displayPosts(totalPosts)
+                var sortedPosts = sortPosts(array);
+                var container = document.querySelector('.post-container');
+                sortedPosts.forEach(function (post) {
+                      container.innerHTML += `
+        <img src="data:image/png;base64,${post['thumbnail']}" class="post-item" alt=${post['id']}>`
+                })
             }
         }
-
         loadNext(posts)
+        // console.log(sortedPosts);
+        // return sortedPosts;
     }
 
     /**

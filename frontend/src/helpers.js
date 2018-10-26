@@ -92,7 +92,7 @@ function sort_unique(arr) {
     });
 }
 
-function sortPosts(posts) {
+export function sortPosts(posts) {
     var time = [];
     var dic = {};
     var newPosts = [];
@@ -269,15 +269,15 @@ export  function displayUserPage(userId) {
                     container.removeChild(container.firstChild);
                 }
                 //append all posts
-                // posts = sortPosts(posts);
-                posts.forEach(function (postId) {
-                    var feed = user.getFeed(postId);
-                    feed
-                        .then(rsp => {
-                            container.innerHTML += `
-                <img src="data:image/png;base64,${rsp['thumbnail']}" class="post-item">`
-                        })
-                })
+                user.userPagePosts(posts)
+                // posts.forEach(function (postId) {
+                //     var feed = user.getFeed(postId);
+                //     feed
+                //         .then(rsp => {
+                //             container.innerHTML += `
+                // <img src="data:image/png;base64,${rsp['thumbnail']}" class="post-item">`
+                //         })
+                // })
                 //display all following
                 var flwingContainer = document.querySelector('.following');
                 // remove all children

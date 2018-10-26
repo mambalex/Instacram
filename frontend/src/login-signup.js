@@ -432,7 +432,7 @@ document.querySelectorAll('.update').forEach(function (val) {
     val.addEventListener('click',function (e){
     e.preventDefault();
     var data_to_update = e.target.previousSibling;
-    if(!data_to_update.textContent){
+    if(e.target.textContent == 'confirm' && !data_to_update.textContent){
         alert('Can not be empty')
         return
     }
