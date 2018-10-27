@@ -131,7 +131,6 @@ function timeConverter(t) {
     var nowMin = now.getMinutes();
     if (a.setHours(0,0,0,0) == today.setHours(0,0,0,0)) {
         var secondGap = now.getTime()/1000 - t;
-        console.log(secondGap);
         var hourGap = nowHour - hour;
         var minGap = nowMin - min;
         if (secondGap > 3600) {
@@ -229,15 +228,18 @@ export  function displayPopupPost(post) {
 
 
 
-export function displayPosts(posts) {
+export function displayPosts(posts,remove) {
     console.log(posts);
     posts = sortPosts(posts)
     var currentUserId = document.querySelector('.current_user_id').textContent;
     const container = document.querySelector('#large-feed');
-    // // remove all children
-    // while (container.firstChild) {
-    //      container.removeChild(container.firstChild);
-    // }
+    if(remove == 'remove'){
+            // remove all children
+        while (container.firstChild) {
+         container.removeChild(container.firstChild);
+        }
+    }
+
     posts.forEach(function (post) {
         const id = post['id'];
         const author = post['meta']['author'];
@@ -376,12 +378,86 @@ export  function displayUserPage(userId) {
 
 
 
-export function getPosts(username, p, n) {
+export function getPosts(username, p, n, remove) {
             const user  = new USER(username);
             var feeds = user.getFollowFeed(p,n);
             feeds
                 .then(rsp => {
                     var posts = rsp['posts'];
-                    displayPosts(posts);
+                    displayPosts(posts,remove);
                 });
+}
+
+
+function getNumFeeds(user,followingIds,counter,totalFeeds) {
+                 var promise = new Promise(function(resolve){
+                      if (counter < followingIds.length) {
+                            user.getUserInfo(followingIds[counter]).then(info => {
+                            console.log(info)
+                            totalFeeds += info.posts.length;
+                            counter ++;
+                            console.log('counter is now: ' + counter);
+                            console.log('total num of feeds is '+totalFeeds);
+                            resolve(getNumFeeds(user,followingIds,counter,totalFeeds));})
+                      }else {
+                        resolve(totalFeeds);
+                      }
+                   });
+                 return promise;
+            }
+
+
+export function getPostNum(username) {
+    var totalFeeds=0;
+    var counter = 0;
+    var user = new USER(username);
+    return  user.getUserInfo().then(rsp => rsp.following)
+                      .then(data => getNumFeeds(user,data,counter,totalFeeds))
+}
+
+
+function getAllFeeds(user,followingIds,counter,newPostIds) {
+                 var promise = new Promise(function(resolve){
+                      if (counter < followingIds.length) {
+                            user.getUserInfo(followingIds[counter]).then(info => {
+                            newPostIds = newPostIds.concat(info.posts)
+                            counter ++;
+                            resolve(getAllFeeds(user,followingIds,counter,newPostIds));})
+                      }else {
+                        resolve(newPostIds);
+                      }
+                   });
+                 return promise;
+            }
+
+export function getCurrentAllFeeds() {
+    var newPostIds=[];
+    var counter = 0;
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    return  user.getUserInfo().then(rsp => rsp.following)
+                      .then(data => getAllFeeds(user,data,counter,newPostIds))
+
+}
+
+function getAuthors(user,postIds,counter,authors) {
+    var promise = new Promise(function(resolve){
+                      if (counter < postIds.length) {
+                            user.getFeed(postIds[counter]).then(info => {
+                            authors.push(info.meta.author)
+                            counter ++;
+                            resolve(getAuthors(user,postIds,counter,authors));})
+                      }else {
+                        resolve(authors);
+                      }
+                   });
+                 return promise;
+}
+
+export function getNewPostAuthors(postIds) {
+    var authors = [];
+    var counter = 0;
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    return getAuthors(user,postIds,counter,authors);
 }

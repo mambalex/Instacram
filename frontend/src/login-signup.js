@@ -15,17 +15,26 @@ document.querySelector('.get-started').addEventListener('click', function() {
 })
 
 
-//dropdown
+//user dropdown
 document.querySelector('.user').addEventListener('click', function(e) {
     e.preventDefault();
-    if( document.querySelector('.dropdown-content').style.display == 'block' ){
-       document.querySelector('.dropdown-content').style.display = 'none';
-    }else{
-        document.querySelector('.dropdown-content').style.display = 'block';
+    document.querySelector('.dropdown-content').style.display = 'block';
+})
+
+//bell dropdown
+document.querySelector('.notification').addEventListener('click', function(e) {
+    e.preventDefault();
+    if(document.querySelector('.dropdown-content2').childNodes.length!=0){
+            document.querySelector('.dropdown-content2').style.display = 'block';
     }
 })
 
-
+document.querySelector('.dropdown-content2').addEventListener('mouseleave', function() {
+        document.querySelector('.dropdown-content2').style.display = 'none';
+})
+document.querySelector('.dropdown-content').addEventListener('mouseleave', function() {
+        document.querySelector('.dropdown-content').style.display = 'none';
+})
 
 
 
@@ -92,6 +101,21 @@ document.addEventListener('mouseup', function (e) {
         container.style.display = 'none';
     }
 });
+
+
+//submit new post
+document.querySelector('.upload-btn').addEventListener('click', function() {
+    var descr = document.querySelector('.description').value;
+    var file = document.querySelector('#inputFile').files[0];
+    if(!descr || !file){
+        alert('Please select a file and enter description')
+        return
+    }
+    var userId = this.parentNode.childNodes[1].textContent;
+    const user  = new USER(userId);
+    user.upload();
+});
+
 
 //click nav profile
 document.querySelector('#profile').addEventListener('click', function (e) {
@@ -614,7 +638,6 @@ document.querySelector('.search-input').addEventListener('keypress', function (e
             )
     }
 })
-
 
 
 

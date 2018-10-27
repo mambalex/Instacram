@@ -1,5 +1,5 @@
 import API from './api.js';
-import {displayPosts,getPosts,sortPosts} from './helpers.js';
+import {getPosts,sortPosts} from './helpers.js';
 // import {createElement} from './helpers.js';
 
 const api  = new API();
@@ -232,8 +232,7 @@ export default class USER {
         rsp
             .then(rsp => {
                     console.log(rsp)
-                    if (rsp['message'] == 'success') {
-                    }
+
                 }
             )
     }

@@ -1,5 +1,5 @@
 // importing named exports we use brackets
-import { getPosts} from './helpers.js';
+import { getPosts,getCurrentAllFeeds,getNewPostAuthors} from './helpers.js';
 
 // when importing 'default' exports, use below syntax
 import API from './api.js';
@@ -8,6 +8,10 @@ const api  = new API();
 
 var currentPost;
 var currentUser;
+var totalNumPost;
+var currentPostList;
+
+
 //login request
 document.querySelector('#login-btn').addEventListener('click',function (e){
     e.preventDefault();
@@ -32,7 +36,6 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
     const login = api.makeAPIRequest(url,options);
     login
         .then(rsp => {
-            console.log(rsp)
             if(rsp['message']=='Invalid Username/Password'){
                 document.querySelector('#errorAlert').style.display = 'block';
                 setTimeout(function () {
@@ -53,7 +56,12 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             document.querySelector('.welcome-user').style.display = 'block';
             document.querySelector('.current_user').textContent = username;
             var user = new USER(username);
+            // getPostNum(username).then(rsp => {
+            //     totalNumPost = rsp;
+            //     console.log(totalNumPost)
+            // })
             user.getUserInfo().then(info => {
+                console.log(info)
                 document.querySelector('.welcome-user').textContent = `Welcome back,  ${info['name']}`;
                 document.querySelector('.current_user_id').textContent = info['id'];
                 document.querySelector('#name').textContent = info['name'];
@@ -62,28 +70,74 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             currentUser = username;
             getPosts(username,0,3);
             currentPost = 3;
+            getCurrentAllFeeds().then(newFeedList => {
+                currentPostList = newFeedList;
+                totalNumPost = newFeedList.length;
+            });
+            notification();
         })
 });
 
+
+//window scroll
 document.onscroll = function() {
     if(document.documentElement.scrollTop + window.innerHeight == document.documentElement.scrollHeight)
     {
-        getPosts(currentUser,currentPost,3)
-        currentPost += 3;
+        if(currentPost < totalNumPost){
+             getPosts(currentUser,currentPost,3)
+            currentPost += 3;
+        }else{
+            alert('Sorry, no more feeds')
+        }
     }
 }
 
 
-//submit new post
-document.querySelector('.upload-btn').addEventListener('click', function() {
-    var descr = document.querySelector('.description').value;
-    var file = document.querySelector('#inputFile').files[0];
-    if(!descr || !file){
-        alert('Please select a file and enter description')
-        return
-    }
-    var userId = this.parentNode.childNodes[1].textContent;
-    const user  = new USER(userId);
-    user.upload();
-});
+function notification() {
+    return setInterval(function () {
+    getCurrentAllFeeds().then(rsp => {
+        var newNum = rsp.length;
+        var newPostList = rsp;
+        if(newNum == totalNumPost){
+            const container = document.querySelector('.dropdown-content2');
+                 // remove all children
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+            document.querySelector('.notifications-count').style.display = 'none';
+        }else{
+            document.querySelector('.notifications-count').textContent = Math.abs(newNum-totalNumPost);
+            document.querySelector('.notifications-count').style.display = 'block';
+            var newPostIds = []
+            newPostList.forEach(function (postId) {
+                if(!currentPostList.includes(postId)){
+                    newPostIds.push(postId)
+                }
+            })
+            getNewPostAuthors(newPostIds).then( authors => {
+                const container = document.querySelector('.dropdown-content2');
+                 // remove all children
+                while (container.firstChild) {
+                    container.removeChild(container.firstChild);
+                }
+                authors.forEach(function (author) {
+                         container.innerHTML += `<a class="msg ${author}">${author} posted a new photo</a>`
+                })
+            })
+        }
+    })},2000)
+}
+
+//reload
+document.querySelector('.home').addEventListener('click', function (event) {
+        event.preventDefault();
+        var currentUser = document.querySelector('.current_user').textContent;
+        getPosts(currentUser,0,3,'remove');
+        getCurrentAllFeeds().then(newFeedList => {
+                currentPostList = newFeedList;
+                totalNumPost = newFeedList.length;
+        });
+})
+
+
 
