@@ -91,8 +91,6 @@ export default class USER {
             }
         }
         loadNext(posts)
-        // console.log(sortedPosts);
-        // return sortedPosts;
     }
 
     /**
@@ -286,6 +284,54 @@ export default class USER {
                     setTimeout(function () {
                         document.querySelector('.profile .alert-success').style.display = 'none';
                     },1000)
+                }
+            )
+    }
+    /**
+     * @ update post
+     */
+    updatePost(id,newText,src) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/?id=${id}`;
+        var options = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            },
+            body: JSON.stringify({'description_text':newText, 'src':src})
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                    console.log(rsp);
+                     if(rsp['message'] == 'success'){
+                        alert('Successfully updated!')
+                    }
+                }
+            )
+    }
+    /**
+     * @ delete post
+     */
+    deletePost(id) {
+        var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
+        var url = `/post/?id=${id}`;
+        var options = {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Token ${token}`
+            }
+        }
+        var rsp = api.makeAPIRequest(url, options);
+        rsp
+            .then(rsp => {
+                     console.log(rsp);
+                     if(rsp['message'] == 'success'){
+                        alert('Successfully deleted!')
+                        document.querySelector('#remove-layer').click();
+                    }
                 }
             )
     }

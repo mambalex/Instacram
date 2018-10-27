@@ -64,36 +64,36 @@
         <!-- app goes here --> 
         <div id='large-feed'>
             <!-- inject feed data -->
-            <section class="post">
-                <div class="id"></div>
-                <h2 class="post-title">Nina</h2>
-                <img src="/images/1_h.jpg" alt="My lounge" class="post-image">
-                <div class="content">
-                    <div class="icon">
-                        <i class="far fa-heart fa-lg heart"></i>
-                        <i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>
-                        <i class="far fa-comment fa-lg comment"></i>
-                        <!--<i class="fas fa-comment fa-lg" id="comment-solid"></i>-->
-                    </div>
-                    <p class="likes">36 likes</p>
-                    <p class="caption">
-                        <span>socleansofreshh</span> When you're too ready for summer '18 ☀️</p>
-                </div>
-                <div class="comment-list">
-                    <p class="comment-item"><span>Alex</span> Hey you look good!</p>
-                    <p class="comment-item"><span>Alex</span> Hey you look good!</p>
-                    <p class="comment-item"><span>Alex</span> Hey you look good!</p>
-                </div>
-                <div class="input-group mb-3 comment-input" style="display: none">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text" ></span>
-                      </div>
-                      <input type="text" class="form-control add-comment"
-                             placeholder="Add a comment..."
-                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
-                </div>
-                <div class="time">6 Nov 2016, 11:23</div>
-            </section>
+            <!--<section class="post">-->
+                <!--<div class="id"></div>-->
+                <!--<h2 class="post-title">Nina</h2>-->
+                <!--<img src="/images/1_h.jpg" alt="My lounge" class="post-image">-->
+                <!--<div class="content">-->
+                    <!--<div class="icon">-->
+                        <!--<i class="far fa-heart fa-lg heart"></i>-->
+                        <!--<i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>-->
+                        <!--<i class="far fa-comment fa-lg comment"></i>-->
+                        <!--&lt;!&ndash;<i class="fas fa-comment fa-lg" id="comment-solid"></i>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--<p class="likes">36 likes</p>-->
+                    <!--<p class="caption">-->
+                        <!--<span>socleansofreshh</span> When you're too ready for summer '18 ☀️</p>-->
+                <!--</div>-->
+                <!--<div class="comment-list">-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                <!--</div>-->
+                <!--<div class="input-group mb-3 comment-input" style="display: none">-->
+                      <!--<div class="input-group-prepend">-->
+                        <!--<span class="input-group-text" ></span>-->
+                      <!--</div>-->
+                      <!--<input type="text" class="form-control add-comment"-->
+                             <!--placeholder="Add a comment..."-->
+                             <!--aria-label="Default" aria-describedby="inputGroup-sizing-default">-->
+                <!--</div>-->
+                <!--<div class="time">6 Nov 2016, 11:23</div>-->
+            <!--</section>-->
         </div>
     </main>
 
@@ -186,7 +186,7 @@
 
                   <!-- COMPONENT START -->
                   <div class="form-group">
-                    <label for="inputFile">File input</label>
+                    <label for="inputFile">Upload picture</label>
                     <input type="file" id="inputFile">
                       <br>
                   </div>
@@ -233,9 +233,12 @@
     <div class="user-page-wrapper">
         <div class="user-page">
         <header>
+            <div class="back"><i class="fas fa-arrow-left"></i></div>
             <div class="header-left">
                 <h1 class="popup-user">Mambalex</h1>
                 <div class="popup-username id">Mambalex</div>
+                <div class="popup-userId id">Mambalex</div>
+                <div class="popup-email"></div>
                 <div class="btn btn-primary follow-btn" id="follow-btn">Follow</div>
                 <div class="btn btn-success following-btn" id="following-btn">Following</div>
             </div>
@@ -277,6 +280,37 @@
 
     </div>
 
+<!-- thumbnail pop up-->
+    <div class="post thumbnail-popup">
+                <!--<div class="id"></div>-->
+                <!--<h2 class="post-title">Nina<div class="edit"><i class="far fa-edit"></i></div></h2>-->
+                <!--<img src="/images/1_h.jpg" alt="My lounge" class="post-image">-->
+                <!--<div class="content">-->
+                    <!--<div class="icon">-->
+                        <!--<i class="far fa-heart fa-lg heart"></i>-->
+                        <!--<i class="fas fa-heart fa-lg heart-solid" style="display: none"></i>-->
+                        <!--<i class="far fa-comment fa-lg comment"></i>-->
+                        <!--&lt;!&ndash;<i class="fas fa-comment fa-lg" id="comment-solid"></i>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--<p class="likes">36 likes</p>-->
+                    <!--<p class="caption">-->
+                        <!--<span class="thumbnail-user">socleansofreshh</span> <span class="thumbnail-text">When you're too ready for summer '18 ☀</span>️</p>-->
+                <!--</div>-->
+                <!--<div class="comment-list">-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                    <!--<p class="comment-item"><span>Alex</span> Hey you look good!</p>-->
+                <!--</div>-->
+                <!--<div class="input-group mb-3 comment-input" style="display: none">-->
+                      <!--<div class="input-group-prepend">-->
+                        <!--<span class="input-group-text" ></span>-->
+                      <!--</div>-->
+                      <!--<input type="text" class="form-control add-comment"-->
+                             <!--placeholder="Add a comment..."-->
+                             <!--aria-label="Default" aria-describedby="inputGroup-sizing-default">-->
+                <!--</div>-->
+                <!--<div class="time">6 Nov 2016, 11:23</div>-->
+            </div>
 
 
 
@@ -284,6 +318,7 @@
 
     <div class="layer"></div>
     <div class="layer2"></div>
+    <div class="layer3"></div>
     <i class="fas fa-times" id="remove-layer"></i>
     <footer id="footer">
         <!--<p>Instacram example</p>-->

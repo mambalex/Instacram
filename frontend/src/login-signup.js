@@ -1,5 +1,5 @@
 import USER from './user.js';
-import {displayUserPage,getPosts} from './helpers.js';
+import {displayUserPage,getPosts,displayPopupPost} from './helpers.js';
 
 
 
@@ -11,7 +11,7 @@ document.querySelector('.get-started').addEventListener('click', function() {
     document.querySelector('.container').style.display = 'inline-flex';
     document.querySelector('.layer').style.display = 'block';
     document.querySelector('.layer2').style.display = 'block';
-    document.querySelector('#remove-layer').style.display = 'block';
+    // document.querySelector('#remove-layer').style.display = 'block';
 })
 
 
@@ -64,10 +64,12 @@ document.querySelector('#switch2').addEventListener('click', function() {
 
 //remove layer
 document.querySelector('#remove-layer').addEventListener('click', function() {
-    document.querySelector('.container').style.display = 'none';
+    // document.querySelector('.container').style.display = 'none';
     document.querySelector('.layer').style.display = 'none';
     document.querySelector('.layer2').style.display = 'none';
+    document.querySelector('.layer3').style.display = 'none';
     document.querySelector('#remove-layer').style.display = 'none';
+    document.querySelector('.thumbnail-popup').style.display = 'none';
 })
 
 
@@ -166,8 +168,14 @@ document.querySelector('#my-posts').addEventListener('click', function (e) {
 document.addEventListener('mouseup', function (e) {
     var container = document.querySelector('.user-page-wrapper');
     var isClickInside = container.contains(e.target);
-    // if the target of the click isn't the container nor a descendant of the container
-    if (!isClickInside)
+    var isThumnailPopUp;
+    if(document.querySelector('.thumbnail-popup').style.display =='block'){
+        isThumnailPopUp = true;
+    }else {
+        isThumnailPopUp = false;
+    }
+    // if the target of the click isn't the container
+    if (!isClickInside && !isThumnailPopUp)
     {
         container.style.display = 'none';
     }
@@ -191,15 +199,125 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
     }
 })
 
+var parentUserId;
 //click following uers popup
 document.querySelector('.user-page').addEventListener('click', function (event) {
     event.preventDefault();
     if (event.target.classList.contains('following-user')) {
-        let userId = event.target.parentNode.querySelector('.id').textContent;
+        let userId = event.target.querySelector('.id').textContent;
+        parentUserId = event.target.parentNode.parentNode.querySelector('.popup-userId').textContent;
         displayUserPage(userId);
+        document.querySelector('.user-page-wrapper .back').style.display = 'block';
         document.querySelector('.user-page-wrapper').style.display = 'block';
     }
 })
+
+//click back
+document.querySelector('.back').addEventListener('click', function (event) {
+    event.preventDefault();
+    displayUserPage(parentUserId);
+    document.querySelector('.user-page-wrapper .back').style.display = 'none';
+})
+
+
+//click thumbnail
+document.querySelector('.post-container').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('post-item')) {
+        document.querySelector('.layer3').style.display = 'block';
+        document.querySelector('#remove-layer').style.display = 'block';
+        document.querySelector('.thumbnail-popup').style.display = 'block';
+        var postId = event.target.alt;
+        var currentUser = document.querySelector('.current_user').textContent;
+        var currentUserId = document.querySelector('.current_user_id').textContent;
+        var popUpUserId = event.target.parentNode.parentNode.querySelector('.popup-userId').textContent;
+        console.log(currentUserId,popUpUserId)
+        var user = new USER(currentUser);
+        var post = user.getFeed(postId);
+        post.then(rsp => {
+                displayPopupPost(rsp);
+                if(currentUserId != popUpUserId){
+                    document.querySelector('.edit').style.display = 'none';
+                    document.querySelector('.delete').style.display = 'none';
+                }
+            })
+    }
+})
+
+
+//click edit  edit & update
+document.querySelector('.thumbnail-popup').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('fa-edit')) {
+        var text = event.target.parentNode.parentNode.parentNode.querySelector('.thumbnail-text');
+        var postId = event.target.parentNode.parentNode.parentNode.querySelector('.id').textContent;
+        console.log(text.contentEditable)
+        if(text.contentEditable =='false' || text.contentEditable == 'inherit'){
+            text.contentEditable = 'true';
+            document.querySelector('#upload-pic').style.display = 'inline-block';
+            document.querySelector('#file-name').style.display = 'inline-block';
+            text.focus();
+        }else{
+            //===================update post==================//
+            //description
+            var updatedText = text.textContent;
+
+            //picture
+            var file = document.querySelector('#inputFile').files[0];
+            var base64;
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                base64 = this.result;
+                base64 = base64.split(',')[1];
+                var currentUser = document.querySelector('.current_user').textContent;
+                var currentUserId = document.querySelector('.current_user_id').textContent;
+                var user = new USER(currentUser );
+                user.updatePost(postId,updatedText,base64);
+                text.contentEditable = 'false';
+                document.querySelector('#upload-pic').style.display = 'none';
+                document.querySelector('#file-name').style.display = 'none';
+                document.querySelector('#inputFile').value = '';
+                displayUserPage(currentUserId);
+            }
+
+        }
+    }
+})
+
+
+
+//click delete
+document.querySelector('.thumbnail-popup').addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('fa-trash-alt')) {
+        var postId = event.target.parentNode.parentNode.parentNode.querySelector('.id').textContent;
+        var currentUser = document.querySelector('.current_user').textContent;
+        var currentUserId = document.querySelector('.current_user_id').textContent;
+        var user = new USER(currentUser );
+        user.deletePost(postId);
+        displayUserPage(currentUserId);
+    }
+})
+
+
+//change pics
+document.querySelector('.thumbnail-popup').addEventListener('click', function (event) {
+     event.preventDefault();
+    if (event.target.classList.contains('update-src')) {
+        document.querySelector('input[type=file]').click();
+    }
+})
+
+//show new pic's name
+document.querySelector('input[type=file]').addEventListener('change', function (event) {
+     event.preventDefault();
+     var file = document.querySelector('#inputFile').files[0];
+     document.querySelector('#file-name').textContent = file.name;
+})
+
+
+
 
 
 
@@ -247,51 +365,53 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
 
 
 
-
-
-
-
-
-
+var listenContainer = ['#large-feed', '.thumbnail-popup'];
 
 //click heart - like
-document.querySelector('#large-feed').addEventListener('click', function (event) {
-   event.preventDefault();
-  if (event.target.classList.contains('heart')) {
-      event.target.style.display = 'none';
-      var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
-      var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
-      likes = parseInt(likes)+1;
-      var solid = event.target.parentNode.childNodes[3];
-      solid.style.display = 'inline-block';
-      var username = document.querySelector('.current_user').textContent;
-      var user = new USER(username);
-      user.like(id);
-      event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
-  }
+listenContainer.forEach(function (selector) {
+    document.querySelector(selector).addEventListener('click', function (event) {
+    event.preventDefault();
+    if (event.target.classList.contains('heart')) {
+          event.target.style.display = 'none';
+          var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+          var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
+          likes = parseInt(likes)+1;
+          var solid = event.target.parentNode.childNodes[3];
+          solid.style.display = 'inline-block';
+          var username = document.querySelector('.current_user').textContent;
+          var user = new USER(username);
+          user.like(id);
+          event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
+        }
+    })
 })
 
 
+
 //click solid heart - unlike
-document.querySelector('#large-feed').addEventListener('click', function (event) {
-   event.preventDefault();
-  if (event.target.classList.contains('heart-solid')) {
-      event.target.style.display = 'none';
-      var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
-      var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
-      likes = parseInt(likes)-1;
-      var heart = event.target.parentNode.childNodes[1];
-      heart.style.display = 'inline-block';
-      var username = document.querySelector('.current_user').textContent;
-      var user = new USER(username)
-      user.unlike(id);
-      event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
-  }
+listenContainer.forEach(function (selector) {
+        document.querySelector(selector).addEventListener('click', function (event) {
+           event.preventDefault();
+          if (event.target.classList.contains('heart-solid')) {
+              event.target.style.display = 'none';
+              var id = event.target.parentNode.parentNode.parentNode.childNodes[1].textContent;
+              var likes = event.target.parentNode.parentNode.childNodes[3].textContent.split(' ')[0];
+              likes = parseInt(likes)-1;
+              var heart = event.target.parentNode.childNodes[1];
+              heart.style.display = 'inline-block';
+              var username = document.querySelector('.current_user').textContent;
+              var user = new USER(username)
+              user.unlike(id);
+              event.target.parentNode.parentNode.childNodes[3].textContent = `${likes} likes`
+          }
+        })
 })
 
 
 //click comment icon
-document.querySelector('#large-feed').addEventListener('click', function (event) {
+
+listenContainer.forEach(function (selector) {
+    document.querySelector(selector).addEventListener('click', function (event) {
     event.preventDefault();
     if (event.target.classList.contains('comment')) {
      var commentIcon  =   event.target.parentNode.childNodes[5];
@@ -303,10 +423,13 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
              input.style.display = 'table';
         }
     }
+    })
 })
 
+
 //click view more
-document.querySelector('#large-feed').addEventListener('click', function (event) {
+listenContainer.forEach(function (selector) {
+document.querySelector(selector).addEventListener('click', function (event) {
     event.preventDefault();
     if (event.target.classList.contains('view-more')) {
         var viewMore = event.target;
@@ -318,7 +441,8 @@ document.querySelector('#large-feed').addEventListener('click', function (event)
             commentList.style.height = '60px';
             viewMore.textContent = `View all ${commentList.childElementCount} comments`;
         }
-    }
+        }
+    })
 })
 
 function insertAfter(newNode, referenceNode) {
@@ -329,7 +453,8 @@ function insertAfter(newNode, referenceNode) {
 
 
 //submit comment
-document.querySelector('#large-feed').addEventListener('keypress', function (event) {
+listenContainer.forEach(function (selector) {
+    document.querySelector(selector).addEventListener('keypress', function (event) {
     if(event.which == 13){
         event.preventDefault();
         var parentPost = event.target.parentNode.parentNode;
@@ -360,11 +485,8 @@ document.querySelector('#large-feed').addEventListener('keypress', function (eve
         }
         event.target.value = '';
     }
+ })
 })
-
-
-
-
 
 
 const API_URL = 'http://127.0.0.1:5000'

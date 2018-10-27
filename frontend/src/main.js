@@ -6,8 +6,8 @@ import API from './api.js';
 import USER from './user.js';
 const api  = new API();
 
-
-
+var currentPost;
+var currentUser;
 //login request
 document.querySelector('#login-btn').addEventListener('click',function (e){
     e.preventDefault();
@@ -32,6 +32,7 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
     const login = api.makeAPIRequest(url,options);
     login
         .then(rsp => {
+            console.log(rsp)
             if(rsp['message']=='Invalid Username/Password'){
                 document.querySelector('#errorAlert').style.display = 'block';
                 setTimeout(function () {
@@ -49,43 +50,28 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             document.querySelector('#main').style.display = 'block';
             document.querySelector('#footer').style.display = 'block';
             document.querySelector('.user').style.display = 'block';
+            document.querySelector('.welcome-user').style.display = 'block';
             document.querySelector('.current_user').textContent = username;
-            getPosts(username,0,10);
-
-            // const user  = new USER(username);
-            // //get user info
-            // var selfPosts;
-            // var userInfo = user.getUserInfo();
-            //     userInfo
-            //         .then(rsp => {
-            //             console.log(rsp);
-            //             selfPosts = rsp['posts'];
-            //             document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
-            //             document.querySelector('.welcome-user').style.display = 'block';
-            //             // var selfFeeds = user.getSelfFeed(selfPosts);
-            //             var otherFeedPromise = user.getFollowFeed(0,10);
-            //             otherFeedPromise
-            //                 .then(rsp => {
-            //                     var otherPosts = rsp['posts'];
-            //                     user.getSelfFeed(selfPosts, otherPosts)
-            //                 });
-            //         })
-
-
-
-
-
-                // var feed = user.getFollowFeed(0,2)
-                //     feed
-                //         .then(posts => {
-                //             displayPosts(posts);
-                //         })
-            // //follow
-            //    user.follow('Anon');
+            var user = new USER(username);
+            user.getUserInfo().then(info => {
+                document.querySelector('.welcome-user').textContent = `Welcome back,  ${info['name']}`;
+                document.querySelector('.current_user_id').textContent = info['id'];
+                document.querySelector('#name').textContent = info['name'];
+                document.querySelector('#email').textContent = info['email'];
+            })
+            currentUser = username;
+            getPosts(username,0,3);
+            currentPost = 3;
         })
 });
 
-
+document.onscroll = function() {
+    if(document.documentElement.scrollTop + window.innerHeight == document.documentElement.scrollHeight)
+    {
+        getPosts(currentUser,currentPost,3)
+        currentPost += 3;
+    }
+}
 
 
 //submit new post
@@ -100,39 +86,4 @@ document.querySelector('.upload-btn').addEventListener('click', function() {
     const user  = new USER(userId);
     user.upload();
 });
-
-
-
-
-
-// .then(posts => {
-//     posts.reduce((parent, post) => {
-//         parent.appendChild(createPostTile(post));
-//         return parent;
-//     }, document.getElementById('large-feed'))
-// });
-
-
-// // we can use this single api request multiple times
-// const feed = api.getFeed();
-//
-// feed
-// .then(posts => {
-//     posts.reduce((parent, post) => {
-//
-//         parent.appendChild(createPostTile(post));
-//
-//         return parent;
-//
-//     }, document.getElementById('large-feed'))
-// });
-
-// Potential example to upload an image
-// const input = document.querySelector('input[type="file"]');
-//
-// input.addEventListener('change', uploadImage);
-
-
-
-
 

@@ -149,6 +149,84 @@ function timeConverter(t) {
 }
 
 
+export  function displayPopupPost(post) {
+        console.log(post);
+        var currentUserId = document.querySelector('.current_user_id').textContent;
+        const container = document.querySelector('.thumbnail-popup');
+            // remove all children
+        while (container.firstChild) {
+             container.removeChild(container.firstChild);
+        }
+        const id = post['id'];
+        const author = post['meta']['author'];
+        const comments  = post['comments'];
+        const description = post['meta']['description_text'];
+        var likes = post['meta']['likes'].length;
+        const path = post['src'];
+        const timeStamp = post['meta']['published'];
+        const time = timeConverter(timeStamp);
+        var likeDisplay = 'inline-block';
+        var solidLikeDisplay = 'none';
+        post['meta']['likes'].forEach(function (val) {
+            if( val == currentUserId){
+                likeDisplay = 'none';
+                solidLikeDisplay = 'inline-block'
+            }
+        })
+        var commentsDiv = '';
+        if(comments.length > 2){
+            commentsDiv  += `<div class='comment-list' style='height:60px'>`
+            comments.forEach(function (cmt) {
+             commentsDiv  += `
+                    <p class="comment-item">
+                        <span>${cmt['author']}</span> ${cmt['comment']}
+                    </p>`
+             })
+            commentsDiv  += `</div><div class='view-more'>View all ${comments.length} comments</div>`
+        }else {
+            commentsDiv  += `<div class='comment-list'>`;
+            comments.forEach(function (cmt) {
+             commentsDiv  += `
+                    <p class="comment-item">
+                        <span>${cmt['author']}</span> ${cmt['comment']}
+                    </p>`
+             })
+            commentsDiv  += '</div>'
+        }
+        container.innerHTML += `
+                <div class="id">${id}</div>
+                <h2 class="post-title">${author}
+                <div class="edit"><i class="far fa-edit"></i></div>
+                <div class="delete"><i class="far fa-trash-alt"></i></div>
+                </h2>
+                <img src="data:image/png;base64,${path}" alt="img" class="post-image">
+                <div class="content">
+                    <div class="icon">
+                  <i class="far fa-heart fa-lg heart" style="display: ${likeDisplay}"></i>
+                 <i class="fas fa-heart fa-lg heart-solid" style="display: ${solidLikeDisplay}"></i>
+                        <i class="far fa-comment fa-lg comment"></i>
+                    </div>
+                    <p class="likes">${likes} likes</p>
+                    <p class="caption">
+                        <span class="author">${author}</span> 
+                        <span class="thumbnail-text">${description}</span>️
+                    </p>
+                </div>
+                ${commentsDiv}
+                <div class="input-group mb-3 comment-input" style="display: none">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text" ></span>
+                      </div>
+                      <input type="text" class="form-control add-comment"
+                             placeholder="Add a comment..."
+                             aria-label="Default" aria-describedby="inputGroup-sizing-default">
+                </div>
+               <button type="button" class="btn btn-primary update-src" id="upload-pic">Change picture</button>
+               <div id="file-name"></div><br>
+                <div class="time">${time}</div>
+        `
+}
+
 
 
 export function displayPosts(posts) {
@@ -156,10 +234,10 @@ export function displayPosts(posts) {
     posts = sortPosts(posts)
     var currentUserId = document.querySelector('.current_user_id').textContent;
     const container = document.querySelector('#large-feed');
-    // remove all children
-    while (container.firstChild) {
-         container.removeChild(container.firstChild);
-    }
+    // // remove all children
+    // while (container.firstChild) {
+    //      container.removeChild(container.firstChild);
+    // }
     posts.forEach(function (post) {
         const id = post['id'];
         const author = post['meta']['author'];
@@ -247,10 +325,14 @@ export  function displayUserPage(userId) {
                 let username = info['username'];
                 var posts = info['posts'];
                 var name = info['name'];
+                var email = info.email;
                 var followedNum = info['followed_num'];
                 var following = info['following'];
+                document.querySelector('.nav-posts').click();
                 document.querySelector('.popup-user').textContent = name;
+                document.querySelector('.popup-email').textContent = email;
                 document.querySelector('.popup-username').textContent = username;
+                document.querySelector('.popup-userId').textContent = info.id;
                 document.querySelector('.popup-post-num').textContent = posts.length;
                 document.querySelector('.popup-follower').textContent = followedNum
                 document.querySelector('.popup-following').textContent = following.length;
@@ -270,14 +352,6 @@ export  function displayUserPage(userId) {
                 }
                 //append all posts
                 user.userPagePosts(posts)
-                // posts.forEach(function (postId) {
-                //     var feed = user.getFeed(postId);
-                //     feed
-                //         .then(rsp => {
-                //             container.innerHTML += `
-                // <img src="data:image/png;base64,${rsp['thumbnail']}" class="post-item">`
-                //         })
-                // })
                 //display all following
                 var flwingContainer = document.querySelector('.following');
                 // remove all children
@@ -304,24 +378,10 @@ export  function displayUserPage(userId) {
 
 export function getPosts(username, p, n) {
             const user  = new USER(username);
-          //get user info
-          //   var selfPosts;
-            var userInfo = user.getUserInfo();
-                userInfo
-                    .then(rsp => {
-                        console.log(rsp);
-                        document.querySelector('#name').textContent = rsp['name'];
-                        document.querySelector('#email').textContent = rsp['email'];
-                        // selfPosts = rsp['posts'];
-                        document.querySelector('.welcome-user').textContent = `Welcome back,  ${rsp['name']}`;
-                        document.querySelector('.welcome-user').style.display = 'block';
-                        document.querySelector('.current_user_id').textContent = rsp['id'];
-                        var otherFeedPromise = user.getFollowFeed(p,n);
-                        otherFeedPromise
-                            .then(rsp => {
-                                var otherPosts = rsp['posts'];
-                                displayPosts(otherPosts);
-                                // user.getSelfFeed(selfPosts, otherPosts)
-                            });
-                    })
+            var feeds = user.getFollowFeed(p,n);
+            feeds
+                .then(rsp => {
+                    var posts = rsp['posts'];
+                    displayPosts(posts);
+                });
 }

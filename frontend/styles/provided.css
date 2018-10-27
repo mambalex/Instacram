@@ -69,6 +69,8 @@ footer {
     margin: 0;
     border-bottom: 1px solid rgba(0,0,0,.0975);
     cursor: pointer;
+    position: relative;
+    width: 60%;
 }
 
 .post-thumb {
@@ -136,12 +138,25 @@ footer {
     background-color: #fff;
 }
 
+.layer3{
+    display: none;
+    position:fixed;
+    padding:0;
+    margin:0;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    z-index: 12;
+    background: rgba(0,0,0,.75);
+}
+
 #remove-layer{
     display: none;
     position: fixed;
-    right: 40px;
-    top:80px;
-    z-index: 10;
+    right: 0px;
+    top:0px;
+    z-index: 13;
     color:white;
     font-size: 25px;
     cursor: pointer;
@@ -335,4 +350,45 @@ footer {
 .search{
     margin-right: 44%;
     width: 200px;
+}
+
+.thumbnail-popup{
+    display: none;
+    position: fixed;
+    z-index: 15;
+    top:100px;
+    left:25%;
+    max-height: calc(100vh - 210px);
+    overflow-y: auto;
+}
+
+.thumbnail-popup .edit{
+    position: absolute;
+    right: -180px;
+    top: 15px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.thumbnail-popup .delete{
+    position: absolute;
+    right: -230px;
+    top: 15px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.thumbnail-text{
+    font-weight: 400 !important;
+}
+
+#upload-pic{
+    display: none;
+    margin-left:20px;
+    padding: 2px 5px !important;
+    margin: -5px 20px 5px 200px!important;
+}
+#file-name{
+    display: none;
+    margin-left: 20px;
 }
