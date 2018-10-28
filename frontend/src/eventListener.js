@@ -549,7 +549,8 @@ document.querySelector('.search-input').addEventListener('keypress', function (e
             .then(rsp =>{
                     if(rsp['message'] == 'User Not Found' ){
                         if(isNaN(val)){
-                            alert('Sorry, no such username or post')
+                            alert('Sorry, no such username or post');
+                            document.querySelector('.search-input').value = '';
                             return
                         }
                       user.getFeed(val)
