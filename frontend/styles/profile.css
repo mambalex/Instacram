@@ -44,7 +44,7 @@
 
 .container2 #save span{
     color: white;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 
@@ -100,10 +100,14 @@
 
 
 .container2 .profile2,.settings {
+
     transition: opacity .5s ease-in;
     position: absolute;
     width: 70%;
 }
+#profile2 .fa{
+    color:white !important;
+ }
 
 .container2 h1 {
     font-family: 'Montserrat', sans-serif;
@@ -125,6 +129,18 @@
 }
 
 .container2 p{
+    border-width: 1px;
+    border-style: solid;
+    border-image: linear-gradient(to right, rgb(63, 182, 168), rgba(126, 211, 134,.5)) 1 0%;
+    border-top: 0;
+    width: 100%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1em;
+    padding: 7px 0;
+    color: #070707;
+}
+
+#password {
     border-width: 1px;
     border-style: solid;
     border-image: linear-gradient(to right, rgb(63, 182, 168), rgba(126, 211, 134,.5)) 1 0%;

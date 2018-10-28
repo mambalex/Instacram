@@ -1,15 +1,18 @@
 // importing named exports we use brackets
-import { getPosts,getCurrentAllFeeds,getNewPostAuthors} from './helpers.js';
+import { getPosts,getCurrentAllFeedIds,getNewPostAuthors} from './helpers.js';
 
 // when importing 'default' exports, use below syntax
 import API from './api.js';
 import USER from './user.js';
+// import Cookie from './cookie.js';
 const api  = new API();
 
 var currentPost;
 var currentUser;
 var totalNumPost;
-var currentPostList;
+var currentPostIdList;
+
+
 
 
 //login request
@@ -51,15 +54,10 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             document.querySelector('.layer2').style.display = 'none';
             document.querySelector('#remove-layer').style.display = 'none';
             document.querySelector('#main').style.display = 'block';
-            document.querySelector('#footer').style.display = 'block';
             document.querySelector('.user').style.display = 'block';
             document.querySelector('.welcome-user').style.display = 'block';
             document.querySelector('.current_user').textContent = username;
             var user = new USER(username);
-            // getPostNum(username).then(rsp => {
-            //     totalNumPost = rsp;
-            //     console.log(totalNumPost)
-            // })
             user.getUserInfo().then(info => {
                 console.log(info)
                 document.querySelector('.welcome-user').textContent = `Welcome back,  ${info['name']}`;
@@ -70,11 +68,13 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             currentUser = username;
             getPosts(username,0,3);
             currentPost = 3;
-            getCurrentAllFeeds().then(newFeedList => {
-                currentPostList = newFeedList;
-                totalNumPost = newFeedList.length;
+            getCurrentAllFeedIds().then(newFeedIdList => {
+                currentPostIdList = newFeedIdList;
+                totalNumPost = newFeedIdList.length;
+                document.querySelector('.post-num span').textContent = totalNumPost;
+                // start detecting and push notifications
+                notification();
             });
-            notification();
         })
 });
 
@@ -95,7 +95,7 @@ document.onscroll = function() {
 
 function notification() {
     return setInterval(function () {
-    getCurrentAllFeeds().then(rsp => {
+    getCurrentAllFeedIds().then(rsp => {
         var newNum = rsp.length;
         var newPostList = rsp;
         if(newNum == totalNumPost){
@@ -106,11 +106,12 @@ function notification() {
                 }
             document.querySelector('.notifications-count').style.display = 'none';
         }else{
+            document.querySelector('.post-num span').textContent = newNum;
             document.querySelector('.notifications-count').textContent = Math.abs(newNum-totalNumPost);
             document.querySelector('.notifications-count').style.display = 'block';
             var newPostIds = []
             newPostList.forEach(function (postId) {
-                if(!currentPostList.includes(postId)){
+                if(!currentPostIdList.includes(postId)){
                     newPostIds.push(postId)
                 }
             })
@@ -128,14 +129,15 @@ function notification() {
     })},2000)
 }
 
-//reload
+//click home
 document.querySelector('.home').addEventListener('click', function (event) {
         event.preventDefault();
         var currentUser = document.querySelector('.current_user').textContent;
         getPosts(currentUser,0,3,'remove');
-        getCurrentAllFeeds().then(newFeedList => {
-                currentPostList = newFeedList;
+        getCurrentAllFeedIds().then(newFeedList => {
+                currentPostIdList = newFeedList;
                 totalNumPost = newFeedList.length;
+                document.querySelector('.post-num span').textContent = totalNumPost;
         });
 })
 

@@ -123,7 +123,7 @@
 
 .login h2,
 .signup h2 {
-	color: #35B729;
+	color: rgb(59,124,179);
 	font-size:22px;
 }
 
@@ -156,7 +156,7 @@
 	border: none;
 	margin-bottom:20px;
 	font-size: 12px;
-	border-left:2px solid #35B729;
+	border-left:2px solid rgb(59,124,179);
 }
 .signup {
 	padding: 18px 25px 10px 25px;

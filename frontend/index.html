@@ -11,9 +11,15 @@
     <link rel="stylesheet" href="styles/profile.css">
     <link rel="stylesheet" type="text/css" href="styles/login-signup.css">
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
-    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>
+     <!--font awesome-->
+    <link href="styles/css/all.css" rel="stylesheet">
+    <!--bootstrap-->
+    <link href="styles/css/bootstrap.min.css" rel="stylesheet">
+
+    <!--<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css'>-->
+    <!--<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">-->
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js" type="text/javascript" async></script>-->
+
     <script type="module" src="src/helpers.js"></script>
     <script type="module" src="src/api.js"></script>
 </head>
@@ -57,7 +63,6 @@
                         <div class="dropdown-content">
                             <a  id="profile">My Profile</a>
                             <a  id="my-posts">My Posts</a>
-                            <a  id="notification">Notification</a>
                             <a href="/" id="logout">Logout</a>
                         </div>
                     </div>
@@ -71,6 +76,7 @@
         <!--</ul>-->
     </header>
     <main role='main' id="main">
+        <div class="post-num"><p>#Feed:<span>6</span></p></div>
         <!-- app goes here --> 
         <div id='large-feed'>
             <!-- inject feed data -->
@@ -142,7 +148,7 @@
 							</div>
 						</div>
 						<!--<p>FORGET PASSWORD?</p>-->
-						<div class="btn btn-success ld-ext-right" id='login-btn'>
+						<div class="btn btn-primary ld-ext-right" id='login-btn'>
                                     LOG IN
                                     <div class="ld ld-ring ld-spin"></div>
                        </div>
@@ -171,7 +177,7 @@
 								<input type="text" id='signup-email' placeholder="EMAIL">
 							</div>
 						</div>
-						<div class="btn btn-success ld-ext-right" id='signup-btn'>
+						<div class="btn btn-primary ld-ext-right" id='signup-btn'>
                                     SIGN UP
                                     <div class="ld ld-ring ld-spin"></div>
                        </div>
@@ -215,13 +221,11 @@
           </div>
 <!--profile popup-->
     <div class="container2">
-    <div class="save"><button class="btn btn-primary" id="save"><span class="glyphicon glyphicon-floppy-saved"></span> Save</button>
+    <div class="save"><button class="btn btn-primary" id="save"><span><i class="far fa-save"></i></span> Save</button>
     </div>
     <div class="leftbox">
         <nav>
             <a id="profile2" class="active"><i class="fa fa-user"></i></a>
-            <a id="privacy"><i class="fa fa-tasks"></i></a>
-            <a id="settings"><i class="fa fa-cog"></i></a>
         </nav>
     </div>
     <div class="rightbox">
@@ -234,7 +238,8 @@
             <h2>Email</h2>
             <div class="edit-row"><p id='email'>example@example.com</p><span class="update">update</span></div>
             <h2>Password </h2>
-            <div class="edit-row"><p type='password' id='password'>•••••••</p><span class="update">change</span></div>
+            <div class="edit-row"><input type='password' id='password' placeholder="•••••••" class="psword"><span class="update">change</span></div>
+            <!--<div class="edit-row"><p type='password' id='password'>•••••••</p><span class="update">change</span></div>-->
         </div>
     </div>
 </div>
@@ -261,9 +266,9 @@
             </div>
         </header>
         <div class="breaker">
-            <a class="nav-posts select"><span></span>POSTS</a>
+            <a class="nav-posts select"><span><i class="fas fa-th-large"></i></span>POSTS</a>
             <!--<a class="nav-followers"><span></span>FOLLOWERS</a>-->
-            <a class="nav-following"><span></span>FOLLOWING</a>
+            <a class="nav-following"><span><i class="fas fa-users"></i></span>FOLLOWING</a>
         </div>
         <div class="post-container">
             <div class="post-item"></div>
@@ -330,10 +335,8 @@
     <div class="layer2"></div>
     <div class="layer3"></div>
     <i class="fas fa-times" id="remove-layer"></i>
-    <footer id="footer">
-        <!--<p>Instacram example</p>-->
-    </footer>
+
     <script type="module" src="src/main.js"></script>
-    <script type="module" src="src/login-signup.js"></script>
+    <script type="module" src="src/eventListener.js"></script>
 </body>
 </html>

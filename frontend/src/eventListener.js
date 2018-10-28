@@ -2,6 +2,11 @@ import USER from './user.js';
 import {displayUserPage,getPosts,displayPopupPost} from './helpers.js';
 
 
+//click logout
+document.querySelector('#logout').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.location.assign('/');
+})
 
 
 //nav get start
@@ -29,16 +34,18 @@ document.querySelector('.notification').addEventListener('click', function(e) {
     }
 })
 
+//bell dropdown remove
 document.querySelector('.dropdown-content2').addEventListener('mouseleave', function() {
         document.querySelector('.dropdown-content2').style.display = 'none';
 })
+//bell dropdown remove
 document.querySelector('.dropdown-content').addEventListener('mouseleave', function() {
         document.querySelector('.dropdown-content').style.display = 'none';
 })
 
 
 
-// switch
+// switch between login and signup
 var loginMsg = document.querySelector('.loginMsg'),
     login = document.querySelector('.login'),
     signupMsg = document.querySelector('.signupMsg'),
@@ -51,10 +58,6 @@ document.querySelector('#switch1').addEventListener('click', function() {
     signupMsg.classList.toggle('visibility');
     signup.classList.toggle('hide');
     login.classList.toggle('hide');
-    // document.querySelector('#successAlert').style.display = 'none';
-    // document.querySelector('#errorAlert').style.display = 'none';
-    // document.querySelector('#successAlert2').style.display = 'none';
-    // document.querySelector('#errorAlert2').style.display = 'none';
 })
 
 document.querySelector('#switch2').addEventListener('click', function() {
@@ -63,25 +66,18 @@ document.querySelector('#switch2').addEventListener('click', function() {
     signupMsg.classList.toggle('visibility');
     signup.classList.toggle('hide');
     login.classList.toggle('hide');
-    // document.querySelector('#successAlert').style.display = 'none';
-    // document.querySelector('#errorAlert').style.display = 'none';
-    // document.querySelector('#successAlert2').style.display = 'none';
-    // document.querySelector('#errorAlert2').style.display = 'none';
-
 })
+
 
 
 //remove layer
 document.querySelector('#remove-layer').addEventListener('click', function() {
-    // document.querySelector('.container').style.display = 'none';
     document.querySelector('.layer').style.display = 'none';
     document.querySelector('.layer2').style.display = 'none';
     document.querySelector('.layer3').style.display = 'none';
     document.querySelector('#remove-layer').style.display = 'none';
     document.querySelector('.thumbnail-popup').style.display = 'none';
 })
-
-
 
 
 
@@ -120,11 +116,8 @@ document.querySelector('.upload-btn').addEventListener('click', function() {
 //click nav profile
 document.querySelector('#profile').addEventListener('click', function (e) {
     e.preventDefault();
-    // document.querySelector('.layer').style.display = 'block';
-    // document.querySelector('.layer2').style.display = 'block';
     document.querySelector('.container2').style.display = 'block';
 })
-
 
 
 //close profile popup
@@ -140,46 +133,29 @@ document.addEventListener('mouseup', function (e) {
 
 
 
-//click posts
+//click posts in the user page
 document.querySelector('.nav-posts').addEventListener('click', function (e) {
     e.preventDefault();
-    // document.querySelector('.followers').style.display = 'none';
     document.querySelector('.following').style.display = 'none';
     document.querySelector('.post-container').style.display = 'flex';
-     document.querySelector('.nav-posts').classList.add('select')
+    document.querySelector('.nav-posts').classList.add('select')
     document.querySelector('.nav-following').classList.remove('select')
-    // document.querySelector('.nav-followers').classList.remove('select')
 })
 
 
-//click following
+//click following in the user page
 document.querySelector('.nav-following').addEventListener('click', function (e) {
     e.preventDefault();
     document.querySelector('.post-container').style.display = 'none';
-    // document.querySelector('.followers').style.display = 'none';
     document.querySelector('.following').style.display = 'flex';
     document.querySelector('.nav-following').classList.add('select')
     document.querySelector('.nav-posts').classList.remove('select')
-    // document.querySelector('.nav-followers').classList.remove('select')
 })
 
 
 
-//click followers
-// document.querySelector('.nav-followers').addEventListener('click', function (e) {
-//     e.preventDefault();
-//     document.querySelector('.post-container').style.display = 'none';
-//     document.querySelector('.following').style.display = 'none';
-//     document.querySelector('.followers').style.display = 'flex';
-//     document.querySelector('.nav-posts').classList.remove('select')
-//     document.querySelector('.nav-following').classList.remove('select')
-//     document.querySelector('.nav-followers').classList.add('select')
-// })
 
-
-
-
-//click nav post
+//click nav my post
 document.querySelector('#my-posts').addEventListener('click', function (e) {
     e.preventDefault();
     var currentUserId = document.querySelector('.current_user_id').textContent;
@@ -342,9 +318,6 @@ document.querySelector('input[type=file]').addEventListener('change', function (
 
 
 
-
-
-
 //click follow
 document.querySelector('.user-page').addEventListener('click', function (event) {
     event.preventDefault();
@@ -362,11 +335,12 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
               console.log(rsp);
               event.target.style.display = 'none';
               event.target.parentNode.querySelector('.following-btn').style.display = 'inline-block';
-              getPosts(currentUser,0,10);
+              document.querySelector('.home').click();
             }
             )
     }
 })
+
 
 //click following
 document.querySelector('.user-page').addEventListener('click', function (event) {
@@ -374,14 +348,14 @@ document.querySelector('.user-page').addEventListener('click', function (event) 
     var currentUser = document.querySelector('.current_user').textContent;
     var user = new USER(currentUser);
     if (event.target.classList.contains('following-btn')) {
-        let username = event.target.parentNode.querySelector('.popup-user').textContent;
+        let username = event.target.parentNode.querySelector('.popup-username').textContent;
         let userInfo = user.unfollow(username);
         userInfo
             .then(rsp => {
               console.log(rsp);
               event.target.style.display = 'none';
               event.target.parentNode.querySelector('.follow-btn').style.display = 'inline-block';
-               getPosts(currentUser,0,10);
+               document.querySelector('.home').click();
               }
             )
     }
@@ -513,6 +487,146 @@ listenContainer.forEach(function (selector) {
 })
 
 
+
+//profile click update
+document.querySelectorAll('.update').forEach(function (val) {
+    val.addEventListener('click',function (e){
+    e.preventDefault();
+    var data_to_update = e.target.previousSibling;
+    if (data_to_update.classList.contains('psword')){
+           if(e.target.textContent == 'confirm' && !data_to_update.value){
+            alert('Can not be empty')
+            return
+        }
+    }else{
+        if(e.target.textContent == 'confirm' && !data_to_update.textContent){
+            alert('Can not be empty')
+            return
+        }
+    }
+    if(e.target.textContent == 'update'){
+        e.target.textContent = 'confirm';
+        data_to_update.setAttribute('contenteditable', 'true');
+        data_to_update.focus();
+        }else{
+            data_to_update.setAttribute('contenteditable', 'false');
+            e.target.textContent = 'update';
+        }
+    });
+})
+
+//update profile
+document.querySelector('#save').addEventListener('click',function (e) {
+    e.preventDefault();
+    var flag = true;
+    document.querySelectorAll('.update').forEach(function (val) {
+        if(val.textContent == 'confirm'){
+            alert('Please confirm your changes!')
+            flag = false;
+            return
+        }
+    })
+    if(flag){
+        var name = document.querySelector('#name').textContent;
+        var email = document.querySelector('#email').textContent;
+        var password = document.querySelector('#password').value;
+        var username = document.querySelector('.current_user').textContent;
+        var user = new USER(username)
+        user.updateProfile(name,email,password)
+    }
+})
+
+
+//search
+document.querySelector('.search-input').addEventListener('keypress', function (event) {
+    if(event.which == 13){
+        event.preventDefault();
+        var val = document.querySelector('.search-input').value;
+        var username = document.querySelector('.current_user').textContent;
+        var user = new USER(username)
+        var userInfo = user.getUserInfo(false,val);
+        userInfo
+            .then(rsp =>{
+                    if(rsp['message'] == 'User Not Found' ){
+                        if(isNaN(val)){
+                            alert('Sorry, no such username or post')
+                            return
+                        }
+                      user.getFeed(val)
+                        .then(rsp => {
+                            if(rsp['message'] == 'Post Not Found' ){
+                                alert('Sorry, no such username or post');
+                                document.querySelector('.search-input').value = '';
+                                return
+                            }else{
+                                //found a post
+                                 displayPopupPost(rsp);
+                                 document.querySelector('.layer3').style.display = 'block';
+                                 document.querySelector('#remove-layer').style.display = 'block';
+                                 document.querySelector('.thumbnail-popup').style.display = 'block';
+                                 document.querySelector('.edit').style.display = 'none';
+                                 document.querySelector('.delete').style.display = 'none';
+                            }
+                        })
+
+                    }else{
+                        //found a user
+                        document.querySelector('.search-input').value = '';
+                        displayUserPage(rsp['id']);
+                        document.querySelector('.user-page-wrapper').style.display = 'block';
+                    }
+                }
+            )
+    }
+})
+
+
+
+
+//fragment url hash
+window.addEventListener('hashchange', function () {
+    var currentUser = document.querySelector('.current_user').textContent;
+    if(window.location.hash) {
+      var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+      if(hash.split('=')[0]=='profile'){
+          var fragUsername = hash.split('=')[1];
+          if(fragUsername == 'me'){fragUsername = currentUser;}
+          var user = new USER(currentUser);
+          var userInfo = user.getUserInfo(false,fragUsername);
+          userInfo
+            .then(rsp =>{
+                    if(rsp['message'] == 'User Not Found' ){
+                        alert('Sorry, no such user');
+                        return
+                    }else{
+                         displayUserPage(false, fragUsername);
+                         document.querySelector('.user-page-wrapper').style.display = 'block';
+                    }
+            })
+      }
+      if(hash.split('=')[0]=='feed'){
+            var feedId= hash.split('=')[1];
+            let user = new USER(currentUser);
+            user.getFeed(feedId)
+                .then(rsp => {
+                    if(rsp['message'] == 'Post Not Found' ){
+                        alert('Sorry, no such post');
+                        return
+                    }else{
+                         displayPopupPost(rsp);
+                         document.querySelector('.layer3').style.display = 'block';
+                         document.querySelector('#remove-layer').style.display = 'block';
+                         document.querySelector('.thumbnail-popup').style.display = 'block';
+                         document.querySelector('.edit').style.display = 'none';
+                         document.querySelector('.delete').style.display = 'none';
+                    }
+                })
+      }
+    }
+});
+
+
+
 const API_URL = 'http://127.0.0.1:5000'
 // const api  = new API();
 
@@ -566,85 +680,8 @@ document.querySelector('#signup-btn').addEventListener('click',function (e){
             },3000)
 
         })
-    
+
 });
-
-
-
-
-
-//profile click update
-document.querySelectorAll('.update').forEach(function (val) {
-    val.addEventListener('click',function (e){
-    e.preventDefault();
-    var data_to_update = e.target.previousSibling;
-    if(e.target.textContent == 'confirm' && !data_to_update.textContent){
-        alert('Can not be empty')
-        return
-    }
-    if(e.target.textContent == 'update'){
-        e.target.textContent = 'confirm';
-        data_to_update.setAttribute('contenteditable', 'true');
-        data_to_update.focus();
-        }else{
-            data_to_update.setAttribute('contenteditable', 'false');
-            e.target.textContent = 'update';
-        }
-    });
-})
-
-//update profile
-document.querySelector('#save').addEventListener('click',function (e) {
-    e.preventDefault();
-    var flag = true;
-    document.querySelectorAll('.update').forEach(function (val) {
-        if(val.textContent == 'confirm'){
-            alert('Please confirm your changes!')
-            flag = false;
-            return
-        }
-    })
-    if(flag){
-        var name = document.querySelector('#name').textContent;
-        var email = document.querySelector('#email').textContent;
-        var password = document.querySelector('#password').textContent;
-        var username = document.querySelector('.current_user').textContent;
-        var user = new USER(username)
-        user.updateProfile(name,email,password)
-    }
-})
-
-
-//search
-document.querySelector('.search-input').addEventListener('keypress', function (event) {
-    if(event.which == 13){
-        event.preventDefault();
-        var val = document.querySelector('.search-input').value;
-        var username = document.querySelector('.current_user').textContent;
-        var user = new USER(username)
-        var userInfo = user.getUserInfo(false,val);
-        userInfo
-            .then(rsp =>{
-                    if(rsp['message'] == 'User Not Found' ){
-                        alert('Sorry, no such user')
-                        document.querySelector('.search-input').value = '';
-                        return
-                    }else{
-                        document.querySelector('.search-input').value = '';
-                        displayUserPage(rsp['id']);
-                        document.querySelector('.user-page-wrapper').style.display = 'block';
-                    }
-                }
-            )
-    }
-})
-
-
-
-
-
-
-
 
 
 

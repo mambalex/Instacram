@@ -92,6 +92,7 @@ function sort_unique(arr) {
     });
 }
 
+//sort posts accoding to its published time
 export function sortPosts(posts) {
     var time = [];
     var dic = {};
@@ -113,6 +114,7 @@ export function sortPosts(posts) {
     return newPosts;
 }
 
+//convert timeStamp to date
 function timeConverter(t) {
     var a = new Date(t * 1000);
     var today = new Date();
@@ -138,7 +140,6 @@ function timeConverter(t) {
         } else {
             if(minGap==0){return '1 minute ago'}else{return `${minGap} minutes ago`}
         }
-        // return 'today, ' + hour + ':' + min;
     }else if (a.setHours(0,0,0,0) == yesterday.setHours(0,0,0,0))
         return 'yesterday, ' + hour + ':' + min;
     else if (year == today.getFullYear())
@@ -147,7 +148,7 @@ function timeConverter(t) {
         return date + ' ' + month + ' ' + year + ', ' + hour + ':' + min;
 }
 
-
+//display pop up post
 export  function displayPopupPost(post) {
         console.log(post);
         var currentUserId = document.querySelector('.current_user_id').textContent;
@@ -227,7 +228,7 @@ export  function displayPopupPost(post) {
 }
 
 
-
+//display posts in the main page
 export function displayPosts(posts,remove) {
     console.log(posts);
     posts = sortPosts(posts)
@@ -308,7 +309,8 @@ export function displayPosts(posts,remove) {
 }
 
 
-export  function displayUserPage(userId) {
+//display user page
+export  function displayUserPage(userId,userName) {
         var username = document.querySelector('.current_user').textContent;
         var user = new USER(username);
         var followOrNot = false;
@@ -320,7 +322,13 @@ export  function displayUserPage(userId) {
                         followOrNot = true;
                     }
                 })
-                var userInfo = user.getUserInfo(userId);
+                var userInfo;
+                if(userId){
+                    userInfo = user.getUserInfo(userId);
+                }else{
+                    userInfo = user.getUserInfo(false,userName)
+                }
+
         userInfo
             .then(info => {
                 console.log(info)
@@ -370,14 +378,12 @@ export  function displayUserPage(userId) {
                         })
                 })
             })
-
-
             })
 
 }
 
 
-
+//get posts and display
 export function getPosts(username, p, n, remove) {
             const user  = new USER(username);
             var feeds = user.getFollowFeed(p,n);
@@ -389,40 +395,15 @@ export function getPosts(username, p, n, remove) {
 }
 
 
-function getNumFeeds(user,followingIds,counter,totalFeeds) {
-                 var promise = new Promise(function(resolve){
-                      if (counter < followingIds.length) {
-                            user.getUserInfo(followingIds[counter]).then(info => {
-                            console.log(info)
-                            totalFeeds += info.posts.length;
-                            counter ++;
-                            console.log('counter is now: ' + counter);
-                            console.log('total num of feeds is '+totalFeeds);
-                            resolve(getNumFeeds(user,followingIds,counter,totalFeeds));})
-                      }else {
-                        resolve(totalFeeds);
-                      }
-                   });
-                 return promise;
-            }
 
-
-export function getPostNum(username) {
-    var totalFeeds=0;
-    var counter = 0;
-    var user = new USER(username);
-    return  user.getUserInfo().then(rsp => rsp.following)
-                      .then(data => getNumFeeds(user,data,counter,totalFeeds))
-}
-
-
-function getAllFeeds(user,followingIds,counter,newPostIds) {
+//get all feeds ids
+function getAllFeedIds(user,followingIds,counter,newPostIds) {
                  var promise = new Promise(function(resolve){
                       if (counter < followingIds.length) {
                             user.getUserInfo(followingIds[counter]).then(info => {
                             newPostIds = newPostIds.concat(info.posts)
                             counter ++;
-                            resolve(getAllFeeds(user,followingIds,counter,newPostIds));})
+                            resolve(getAllFeedIds(user,followingIds,counter,newPostIds));})
                       }else {
                         resolve(newPostIds);
                       }
@@ -430,16 +411,18 @@ function getAllFeeds(user,followingIds,counter,newPostIds) {
                  return promise;
             }
 
-export function getCurrentAllFeeds() {
+export function getCurrentAllFeedIds() {
     var newPostIds=[];
     var counter = 0;
     var username = document.querySelector('.current_user').textContent;
     var user = new USER(username);
     return  user.getUserInfo().then(rsp => rsp.following)
-                      .then(data => getAllFeeds(user,data,counter,newPostIds))
+                      .then(data => getAllFeedIds(user,data,counter,newPostIds))
 
 }
 
+
+//get all feeds authors
 function getAuthors(user,postIds,counter,authors) {
     var promise = new Promise(function(resolve){
                       if (counter < postIds.length) {
@@ -460,4 +443,28 @@ export function getNewPostAuthors(postIds) {
     var username = document.querySelector('.current_user').textContent;
     var user = new USER(username);
     return getAuthors(user,postIds,counter,authors);
+}
+
+
+//get all feeds information
+function getAllFeeds(user,postIds,counter,allPostsInfo) {
+    var promise = new Promise(function(resolve){
+                      if (counter < postIds.length) {
+                            user.getFeed(postIds[counter]).then(info => {
+                            allPostsInfo.push(info)
+                            counter ++;
+                            resolve(getAllFeeds(user,postIds,counter,allPostsInfo));})
+                      }else {
+                        resolve(allPostsInfo);
+                      }
+                   });
+                 return promise;
+}
+
+export function getFeedsInfo(postIds) {
+    var counter = 0;
+    var allPostsInfo = [];
+    var username = document.querySelector('.current_user').textContent;
+    var user = new USER(username);
+    return getAllFeeds(user,postIds,counter,allPostsInfo);
 }

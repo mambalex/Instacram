@@ -153,8 +153,8 @@
 }
 
 .follower, .following-user{
+    width: 40%;
     margin-bottom: 5px;
-    margin-right: 40%;
     cursor: pointer;
 }
 
@@ -166,4 +166,14 @@
  #following-btn{
     padding: 3px 8px;
     margin-top:20px
+ }
+
+ .nav-posts span{
+     margin-right: 5px;
+     font-weight: 300;
+ }
+
+ .nav-following span{
+     margin-right: 5px;
+     font-weight: 300;
  }

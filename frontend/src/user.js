@@ -1,6 +1,5 @@
 import API from './api.js';
 import {getPosts,sortPosts} from './helpers.js';
-// import {createElement} from './helpers.js';
 
 const api  = new API();
 
@@ -9,16 +8,15 @@ const api  = new API();
 export default class USER {
 
     /**
-     * Defaults to teh API URL
+     * Defaults username
      * @param {string} url
      */
     constructor(username) {
         this.username = username;
     }
 
-
     /**
-     * @returns user info
+     * @returns user info promise
      */
     getUserInfo(id,userName) {
         var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
@@ -40,7 +38,7 @@ export default class USER {
         return userInfo;
     }
     /**
-     * @returns user info
+     * @returns feed promise
      */
     getFeed(postId) {
         var token = JSON.parse(localStorage.getItem(`${this.username}Token`));
@@ -56,7 +54,7 @@ export default class USER {
         return feed;
     }
     /**
-     * @returns user info
+     * sort and display posts in user page
      */
     userPagePosts(posts) {
         var array=[];
@@ -199,19 +197,6 @@ export default class USER {
         rsp
             .then(rsp => {
                     console.log(rsp)
-                    if (rsp['message'] == 'success') {
-                        // var url = `/post/?id=${postId}`;
-                        // var options = {
-                        //             method: 'GET',
-                        //             headers: {
-                        //                 'Content-Type': 'application/json',
-                        //                 'Authorization': `Token ${token}`
-                        //             }
-                        // }
-                        // var feed = api.makeAPIRequest(url,options);
-                        // feed
-                        //     .then(rsp => console.log(rsp))
-                    }
                 }
             )
     }
@@ -232,7 +217,6 @@ export default class USER {
         rsp
             .then(rsp => {
                     console.log(rsp)
-
                 }
             )
     }
@@ -254,9 +238,6 @@ export default class USER {
         rsp
             .then(rsp => {
                     console.log(rsp)
-                    // if (rsp['message'] == 'success'){
-                    //
-                    // }
                 }
             )
     }
