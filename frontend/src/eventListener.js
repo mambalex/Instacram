@@ -673,13 +673,16 @@ document.querySelector('#signup-btn').addEventListener('click',function (e){
     const signup = makeAPIRequest(url,options);
     signup
         .then(rsp => {
-            btn.classList.remove('running');
-            console.log(rsp);
-            document.querySelector('#successAlert2').style.display = 'block';
-            setTimeout(function () {
-                document.querySelector('#successAlert2').style.display = 'none';
-            },3000)
-
+            if(rsp.token){
+                document.querySelector('#successAlert2').style.display = 'block';
+                setTimeout(function () {
+                    document.querySelector('#successAlert2').style.display = 'none';
+                },3000)
+            }
+            if(rsp.message=='Username Taken'){
+                alert('Username Taken')
+                return
+            }
         })
 
 });

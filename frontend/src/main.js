@@ -55,7 +55,6 @@ document.querySelector('#login-btn').addEventListener('click',function (e){
             document.querySelector('#remove-layer').style.display = 'none';
             document.querySelector('#main').style.display = 'block';
             document.querySelector('.user').style.display = 'block';
-            document.querySelector('.welcome-user').style.display = 'block';
             document.querySelector('.current_user').textContent = username;
             var user = new USER(username);
             user.getUserInfo().then(info => {

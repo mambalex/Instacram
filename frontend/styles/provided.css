@@ -55,6 +55,12 @@ html, body {
     color: #262626;
     font-size: 22px;
 }
+
+@media screen and (max-width: 1240px){
+	.notification{	display: none;}
+}
+
+
 .notifications-count{
     display: none;
     position: absolute;
@@ -73,7 +79,7 @@ html, body {
 }
 
 .welcome-user{
-    display: none;
+    display: block;
     color: #262626;
     /*position: absolute;*/
     /*right: 100px;*/
@@ -83,6 +89,9 @@ html, body {
     font-size: 17px;
 }
 
+@media screen and (max-width: 1150px){
+	.welcome-user{	display: none;}
+}
 .nav-upload{
     /*position: absolute;*/
     /*right: 330px;*/
