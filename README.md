@@ -5,12 +5,9 @@ major avenue of this has been in the use of Single Page Applications or SPAs. SP
 are generated, rendered, and updated using JavaScript. Because SPAs don't require a user
 to navigate away from a page to do anything, they retain a degree of user and application state.
 
-There are millions of websites that utilise SPAs in part of, or all of their web applications.
+This project intends to build a simple SPA which can fetch dynamic data from a HTTP/S API.
 
-The assignment intends to teach students to build a simple SPA which can fetch dynamic data from a HTTP/S API.
-Your task will be to provide an implemention of a SPA that can provide a number of key features.
-
-Some of the skills/concepts this assignment aims to test (and build upon):
+Some of the skills/concepts of this project:
 
 * Simple event handling (buttons)
 * Advanced Mouse Events (Swipe)
@@ -22,35 +19,45 @@ Some of the skills/concepts this assignment aims to test (and build upon):
 * Offline Support
 * Routing (URL fragment based routing)
 
-## API
+## How to get started
 
-The backend server will be where you'll be getting your data. Don't touch the code in the backend; although we've provided the source,
-it's meant to be a black box. Final testing will be done with our own backend. Use the instructions provided in the backend/README.md
-to get it started.
+#Step 1 Run the backend server
 
-For the full docs on the API, start the backend server and navigate to the root (very likely to be `localhost:5000`). You'll see
-all the endpoints, descriptions and expected responses.
+You will need python 3.6 or 3.7 on your own computer - python 3.5 or earlier will not work.
 
-## A Working Product
-Your site should be compatible with 'modern' Chrome, Safari, and Mozilla browsers.
-We will assume your browser has JavaScript enabled, and supports ES6 syntax.
+```bash
+cd backend
+# create a sandbox for the backend
+virtualenv -p /usr/bin/python3 env
+# enter sandbox
+source env/bin/activate
+# set up sandbox
+pip install -r requirements.txt
+# run backend! Will run on port 5000.
+# go to http://127.0.0.1:5000/ to see the docs!
+python run.py
+```
 
-## Restrictions
-You cannot use more than _minimal_ amounts of external JavaScript. Do not use NPM except to
-install the helper development libraries. We will allow you to use CSS from external sources as long as it properly attributed.
+Once you are done, run the following
+command to exit the sandbox
 
-## Getting Started
-Clone the repository provided. It has a whole bunch of code, documentation, and a whole working server you'll need for
-developing your frontend applicaiton.
+```bash
+deactivate
+```
 
-Please read the relevant docs for setup in the folders `/backend` and `/frontend` of the provided repository.
-Each folder outlines basic steps to get started. There are also some comments provided in the frontend source code.
+#Step 2 Run the frontend app
 
-## Milestones
-Level 0 focuses on the basic user interface and interaction building of the site.
-There is no need to implement any integration with the backend for this level.
+```bash
+# install helper scripts
+npm install
 
-### Level 0
+# start the dev server on first available port.. likely 8080
+npm start
+
+```
+
+
+### Stage 0
 
 **Login**
 The site presents a login form and a user can log in with pre-defined hard coded credentials.
@@ -78,8 +85,8 @@ Each post must include:
 5. The post description text
 6. How many comments the post has
 
-## Level 1
-Level 1 focuses on fetching data from the API.
+## Stage 1
+Stage 1 focuses on fetching data from the API.
 
 **Login**
 The site presents a login form and verifies the provided credentials with the backend (`POST /login`). Once logged in, the user can see the home page.
@@ -90,8 +97,8 @@ An option to register for "Instacram" is presented allowing the user to sign up 
 **Feed Interface**
 The content shown in the user's feed is sourced from the backend. (`GET /user/feed`)
 
-## Level 2
-Level 2 focuses on a richer UX and will require some backend interaction.
+## Stage 2
+Stage 2 focuses on a richer UX and will require some backend interaction.
 
 **Show Likes**
 Allow an option for a user to see a list of all users who have liked a post.
@@ -115,8 +122,8 @@ Note users can ignore this if they properly implement Level 3's Infinite Scroll.
 **Profile**
 Users can see their own profile information such as username, number of posts, sum of likes they received on all their posts, etc. You may choose to utilise the information from the api in more creative ways such as displaying their most liked post etc. Get this information from (GET /user)
 
-## Level 3
-Level 3 focuses on more advanced features that will take time to implement and will
+## Stage 3
+Stage 3 focuses on more advanced features that will take time to implement and will
 involve a more rigourously designed app to execute.
 
 **Infinite Scroll**
@@ -151,7 +158,7 @@ Add just the count of followers / follows to everyones public user page
 **Delete/Update Post**
 Let a user update a post they made or delete it via (`DELETE /post`) or (`PUT /post`)
 
-## Level 4
+## Stage 4
 
 **Slick UI**
 The user interface looks good, is performant, makes logical sense, and is usable.
@@ -164,9 +171,3 @@ Users can access the "Instacram" at all times by using Web Workers to cache the 
 
 **Fragment based URL routing**
 Users can access different pages using URL fragments:
-
-```
-/#profile=me
-/#feed
-/#profile=janecitizen
-```
